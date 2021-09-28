@@ -1,3 +1,14 @@
 {
-  "presets": ["next/babel"]
+  "presets": ["next/babel"],
+  // support typescript decorators
+  // https://stackoverflow.com/questions/52262084/syntax-error-support-for-the-experimental-syntax-decorators-legacy-isnt-cur
+  "plugins": [
+    "babel-plugin-transform-typescript-metadata",
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ]
+  ]
 }
