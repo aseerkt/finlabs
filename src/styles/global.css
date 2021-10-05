@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .btn {
+    @apply p-2 font-semibold text-white bg-blue-800 border-2 border-blue-800 rounded-md outline-none cursor-pointer hover:bg-blue-700 hover:border-blue-700 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-disabled {
+    @apply;
+  }
+
+  .btn-outline {
+    @apply text-blue-800 bg-white border-blue-800 hover:bg-blue-50;
+  }
+
+  .form-title {
+    @apply pb-5 my-5 text-3xl font-bold border-b;
+  }
+
+  .form-label {
+    @apply block mb-1 font-semibold;
+  }
+
+  .form-field {
+    @apply block w-full p-2 bg-gray-700 rounded-md shadow-inner outline-none focus:bg-gray-800;
+  }
+
+  .layout {
+    @apply container flex flex-col p-5 mx-auto;
+  }
+}

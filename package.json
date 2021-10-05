@@ -23,14 +23,19 @@
     ]
   },
   "dependencies": {
-    "@typegoose/typegoose": "^9.0.1",
+    "axios": "^0.21.4",
     "bcryptjs": "^2.4.3",
+    "classnames": "^2.3.1",
     "cookie": "^0.4.1",
+    "dayjs": "^1.10.7",
+    "formik": "^2.2.9",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.7",
     "next": "latest",
+    "nprogress": "^0.2.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.15.4",
@@ -40,6 +45,7 @@
     "@types/jest": "^26.0.23",
     "@types/jsonwebtoken": "^8.5.5",
     "@types/node": "^14.14.25",
+    "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
