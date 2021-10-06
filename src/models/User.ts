@@ -28,6 +28,6 @@ UserSchema.methods.verifyPassword = function (password: string) {
   return bcrypt.compare(password, this.password);
 };
 
-const UserModel = mongoose.models.User || model<IUser>('User', UserSchema);
+const UserModel = mongoose.models?.User || model<IUser>('User', UserSchema);
 
 export default UserModel;
