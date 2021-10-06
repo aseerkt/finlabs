@@ -31,6 +31,7 @@ export default apiWrapper(async (req, res) => {
         title: 'test board',
         description: 'this is a test board',
         label: LabelsEnum.question,
+        author: userId,
       });
 
       await testBoard.save();
