@@ -5,6 +5,7 @@ import { User } from '@/models/User';
 import produce from 'immer';
 import { IBoard } from '@/models/Board';
 import { IColumn } from '@/models/Column';
+import axios from 'axios';
 
 type BoardActionPayload = {
   columnId?: string;
@@ -58,10 +59,10 @@ const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
 
 interface ProjectContextType {
   project: ProjectState;
-  addBoard: (board: Partial<IBoard>) => void;
-  deleteBoard: (boardId: string) => void;
-  editBoard: (boardToEdit: IBoard) => void;
-  clearColumn: (columnId: string) => void;
+  addBoard: (board: Partial<IBoard>) => Promise<void>;
+  deleteBoard: (boardId: string) => Promise<void>;
+  editBoard: (boardToEdit: IBoard) => Promise<void>;
+  clearColumn: (columnId: string) => Promise<void>;
   onDragEnd: OnDragEndResponder;
 }
 
@@ -73,20 +74,37 @@ const ProjectProvider: React.FC<{ project: ProjectState }> = ({
 }) => {
   const [state, dispatch] = useReducer(projectReducer, project);
 
-  const addBoard: ProjectContextType['addBoard'] = (board) => {
-    dispatch({ type: 'ADD_BOARD', payload: { board: board as IBoard } });
+  const addBoard: ProjectContextType['addBoard'] = async (board) => {
+    const res = await axios.post(`/projects/${state._id}/boards`, { board });
+    if (res.data.board) {
+      dispatch({
+        type: 'ADD_BOARD',
+        payload: { board: res.data.board as IBoard },
+      });
+    }
   };
 
-  const deleteBoard: ProjectContextType['deleteBoard'] = (boardId) => {
-    dispatch({ type: 'DELETE_BOARD', payload: { boardId } });
+  const deleteBoard: ProjectContextType['deleteBoard'] = async (boardId) => {
+    const res = await axios.delete(`/projects/${state._id}/boards/${boardId}`);
+    if (res.status === 200)
+      dispatch({ type: 'DELETE_BOARD', payload: { boardId } });
   };
 
-  const editBoard: ProjectContextType['editBoard'] = (boardToEdit) => {
-    dispatch({ type: 'EDIT_BOARD', payload: { board: boardToEdit } });
+  const editBoard: ProjectContextType['editBoard'] = async (boardToEdit) => {
+    const res = await axios.put(
+      `/projects/${state._id}/boards/${boardToEdit._id}`,
+      { board: boardToEdit }
+    );
+    if (res.status === 200)
+      dispatch({ type: 'EDIT_BOARD', payload: { board: boardToEdit } });
   };
 
-  const clearColumn: ProjectContextType['clearColumn'] = (columnId) => {
-    dispatch({ type: 'CLEAR_COLUMN', payload: columnId });
+  const clearColumn: ProjectContextType['clearColumn'] = async (columnId) => {
+    const res = await axios.delete(
+      `/projects/${state._id}/columns/${columnId}`
+    );
+    if (res.status === 200)
+      dispatch({ type: 'CLEAR_COLUMN', payload: columnId });
   };
 
   const onDragEnd: OnDragEndResponder = (result) => {

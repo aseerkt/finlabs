@@ -57,13 +57,7 @@ export default apiWrapper(async (req, res) => {
       });
 
       return res.status(201).json({
-        project: {
-          ...project.toJSON(),
-          columns: columns.map((col) => ({
-            ...col.toJSON(),
-            boards: [board.toJSON()],
-          })),
-        },
+        project: project.toJSON(),
       });
     }
   }

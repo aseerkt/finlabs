@@ -70,9 +70,10 @@ function BoardModalProvider({ children }: { children: React.ReactNode }) {
               onSubmit={async (values) => {
                 try {
                   if (!boardToEdit) {
-                    addBoard(values);
+                    console.log(values);
+                    await addBoard(values);
                   } else {
-                    editBoard(values as IBoard);
+                    await editBoard(values as IBoard);
                   }
                   onClose();
                 } catch (err) {
