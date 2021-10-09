@@ -6,6 +6,8 @@ import produce from 'immer';
 import { IBoard } from '@/models/Board';
 import { IColumn } from '@/models/Column';
 import axios from 'axios';
+import { useToast } from '@/context/ToastContext';
+import { useRouter } from 'next/router';
 
 type BoardActionPayload = {
   columnId?: string;
@@ -13,14 +15,20 @@ type BoardActionPayload = {
   boardId?: string;
 };
 
+type ProjectActionPayload = {
+  project: IProject;
+};
+
 interface ProjectAction {
   type:
+    | 'EDIT_PROJECT'
+    | 'DELETE_PROJECT'
     | 'ADD_BOARD'
     | 'EDIT_BOARD'
     | 'DELETE_BOARD'
     | 'CLEAR_COLUMN'
     | 'SET_COLUMN';
-  payload?: string | BoardActionPayload;
+  payload?: string | BoardActionPayload | ProjectActionPayload;
 }
 
 export interface ProjectState extends Omit<IProject, 'creator'> {
@@ -31,6 +39,14 @@ export interface ProjectState extends Omit<IProject, 'creator'> {
 
 const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
   switch (action.type) {
+    case 'EDIT_PROJECT':
+      const { project } = action.payload as ProjectActionPayload;
+      draft = {
+        ...draft,
+        ...project,
+      };
+      break;
+      break;
     case 'ADD_BOARD': {
       const { board } = action.payload as BoardActionPayload;
       draft.boards.push(board as IBoard);
@@ -52,6 +68,7 @@ const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
       draft.boards = draft.boards.filter((b) => b.columnId !== columnId);
       break;
     }
+    case 'DELETE_PROJECT':
     default:
       break;
   }
@@ -59,6 +76,8 @@ const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
 
 interface ProjectContextType {
   project: ProjectState;
+  editProject: (project: IProject) => Promise<void>;
+  deleteProject: () => Promise<void>;
   addBoard: (board: Partial<IBoard>) => Promise<void>;
   deleteBoard: (boardId: string) => Promise<void>;
   editBoard: (boardToEdit: IBoard) => Promise<void>;
@@ -72,7 +91,23 @@ const ProjectProvider: React.FC<{ project: ProjectState }> = ({
   project,
   children,
 }) => {
+  const toast = useToast();
+  const router = useRouter();
   const [state, dispatch] = useReducer(projectReducer, project);
+
+  const editProject: ProjectContextType['editProject'] = async (project) => {
+    const res = await axios.put(`/projects/${state._id}`, { project });
+    if (res.status === 200)
+      dispatch({ type: 'EDIT_PROJECT', payload: { project } });
+  };
+
+  const deleteProject: ProjectContextType['deleteProject'] = async () => {
+    const res = await axios.delete(`/projects/${state._id}`);
+    if (res.status === 200) {
+      toast(`project ${state.name} deleted successfully`, 'info');
+      router.push('/projects');
+    }
+  };
 
   const addBoard: ProjectContextType['addBoard'] = async (board) => {
     const res = await axios.post(`/projects/${state._id}/boards`, { board });
@@ -116,6 +151,8 @@ const ProjectProvider: React.FC<{ project: ProjectState }> = ({
     <ProjectContext.Provider
       value={{
         project: state,
+        editProject,
+        deleteProject,
         addBoard,
         deleteBoard,
         editBoard,

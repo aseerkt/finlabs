@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import ProjectModel from '@/models/Project';
 import apiWrapper from '@/libs/apiWrapper';
+import { getUserFromCookie } from '@/helpers/cookieHelper';
 
 export default apiWrapper(async function (req, res) {
   switch (req.method) {
@@ -28,5 +29,27 @@ export default apiWrapper(async function (req, res) {
 
       return res.json({ project: project[0] });
     }
+
+    case 'PUT':
+      const userId = getUserFromCookie(req, res, true);
+
+      const { acknowledged } = await ProjectModel.updateOne(
+        {
+          _id: req.query.projectId,
+          creator: userId,
+        },
+        { $set: req.body.project },
+        { lean: true }
+      );
+
+      return res.status(acknowledged ? 200 : 400).json({ ok: acknowledged });
+
+    case 'DELETE':
+      const { deletedCount } = await ProjectModel.deleteOne({
+        _id: req.query.projectId,
+        creator: userId,
+      });
+
+      return res.status(deletedCount ? 200 : 400).json({ ok: deletedCount });
   }
 });

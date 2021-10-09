@@ -4,7 +4,7 @@ import Avatar from '@/shared/Avatar';
 import Button from '@/shared/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaSpinner } from 'react-icons/fa';
 
 function Navbar() {
   const { user, loading } = useAuth();
@@ -40,7 +40,9 @@ function Navbar() {
                   </Link>
                 </>
               )
-            ) : null}
+            ) : (
+              <FaSpinner className='animate-spin' />
+            )}
           </div>
         </nav>
       </header>
