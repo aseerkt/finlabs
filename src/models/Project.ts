@@ -1,17 +1,26 @@
-import mongoose, { Document, model, PopulatedDoc, Schema } from 'mongoose';
-import { Board } from './Board';
+import {
+  Document,
+  Model,
+  model,
+  models,
+  ObjectId,
+  PopulatedDoc,
+  Schema,
+} from 'mongoose';
 import { User } from './User';
 
-export interface Project extends Document {
+export interface IProject {
+  _id: string;
   name: string;
   description?: string;
   sourceCode?: string;
   website?: string;
-  boards: PopulatedDoc<Board>[];
   creator: PopulatedDoc<User>;
   createdAt: number;
   updatedAt: number;
 }
+
+export interface Project extends Document, Omit<IProject, '_id'> {}
 
 const ProjectSchema = new Schema<Project>(
   {
@@ -19,13 +28,13 @@ const ProjectSchema = new Schema<Project>(
     description: String,
     sourceCode: String,
     website: String,
-    boards: [{ type: 'ObjectId', ref: 'Board' }],
-    creator: { type: 'ObjectId', ref: 'User' },
+    creator: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
 );
 
 const ProjectModel =
-  mongoose.models?.Project || model<Project>('Project', ProjectSchema);
+  (models?.Project as Model<Project>) ||
+  model<Project>('Project', ProjectSchema);
 
 export default ProjectModel;

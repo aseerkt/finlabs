@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { FaPlus } from 'react-icons/fa';
 
 function Navbar() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   return (
@@ -20,25 +20,27 @@ function Navbar() {
             </a>
           </Link>
           <div className='flex items-center ml-auto space-x-3'>
-            {user ? (
-              <>
-                <Button isRound onClick={() => router.push('/new')}>
-                  <FaPlus />
-                </Button>
-                <UserMenu>
-                  <Avatar src={user.avatar} alt={user.username} />
-                </UserMenu>
-              </>
-            ) : (
-              <>
-                <Link href='/login'>
-                  <a className='btn btn-outline'>login</a>
-                </Link>
-                <Link href='/register'>
-                  <a className='btn'>register</a>
-                </Link>
-              </>
-            )}
+            {!loading ? (
+              user ? (
+                <>
+                  <Button isRound onClick={() => router.push('/new')}>
+                    <FaPlus />
+                  </Button>
+                  <UserMenu>
+                    <Avatar src={user.avatar} alt={user.username} />
+                  </UserMenu>
+                </>
+              ) : (
+                <>
+                  <Link href='/login'>
+                    <a className='btn btn-outline'>login</a>
+                  </Link>
+                  <Link href='/register'>
+                    <a className='btn'>register</a>
+                  </Link>
+                </>
+              )
+            ) : null}
           </div>
         </nav>
       </header>

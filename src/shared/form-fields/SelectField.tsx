@@ -8,7 +8,7 @@ type SelectFieldProps = React.DetailedHTMLProps<
   name: string;
 };
 
-export const selectField: React.FC<SelectFieldProps> = ({
+export const SelectField: React.FC<SelectFieldProps> = ({
   label,
   ...props
 }) => {

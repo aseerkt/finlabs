@@ -7,12 +7,9 @@
     @apply p-2 font-semibold text-white bg-blue-800 border-2 border-blue-800 rounded-md outline-none cursor-pointer hover:bg-blue-700 hover:border-blue-700 disabled:cursor-not-allowed disabled:opacity-60;
   }
 
-  .btn-disabled {
-    @apply;
-  }
 
   .btn-outline {
-    @apply text-blue-800 bg-white border-blue-800 hover:bg-blue-50;
+    @apply text-white bg-transparent border-blue-800 hover:bg-opacity-20;
   }
 
   .form-title {

@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <AuthProvider>
       <ToastProvider>
         <ShowNavbar />
-        <main className='container mx-auto'>
+        <main className='container'>
           <Component {...pageProps} />
         </main>
       </ToastProvider>

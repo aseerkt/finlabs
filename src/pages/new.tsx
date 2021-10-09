@@ -8,7 +8,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import axios from 'axios';
 import { useToast } from '@/context/ToastContext';
 import { useRouter } from 'next/router';
-import { checkEmptyObj } from '@/helpers/checkEmptyObj';
+import { isEmptyObj } from '@/helpers/isEmptyObj';
 
 const CreateProjectPage: NextPage<{ user: User }> = () => {
   const toast = useToast();
@@ -35,9 +35,11 @@ const CreateProjectPage: NextPage<{ user: User }> = () => {
               }
             } catch (err) {
               console.error(err);
-              if (err.response.data) {
+              if (err.response.data.error) {
                 toast(err.response.data.error, 'error');
+                return;
               }
+              toast(err.message, 'error');
             }
           }}
         >
@@ -46,7 +48,7 @@ const CreateProjectPage: NextPage<{ user: User }> = () => {
               <InputField label='name' name='name' />
               <TextAreaField label='description' name='description' />
               <Button
-                disabled={checkEmptyObj(values)}
+                disabled={isEmptyObj(values)}
                 isLoading={isSubmitting}
                 className='mt-5'
                 type='submit'

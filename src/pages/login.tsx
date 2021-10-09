@@ -7,7 +7,7 @@ import { Formik, Form } from 'formik';
 import { useAuth } from '@/context/AuthContext';
 import { InputField } from '@/shared/form-fields';
 import Button from '@/shared/Button';
-import { checkEmptyObj } from '@/helpers/checkEmptyObj';
+import { isEmptyObj } from '@/helpers/isEmptyObj';
 
 function Login() {
   const toast = useToast();
@@ -48,7 +48,7 @@ function Login() {
               <InputField label='username or email' name='usernameOrEmail' />
               <InputField type='password' label='password' name='password' />
               <Button
-                disabled={checkEmptyObj(values)}
+                disabled={isEmptyObj(values)}
                 isLoading={isSubmitting}
                 className='mt-5'
                 type='submit'

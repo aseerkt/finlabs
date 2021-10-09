@@ -44,10 +44,11 @@ export function clearTokenCookie(res: NextApiResponse) {
   res.setHeader(
     'Set-Cookie',
     cookie.serialize(COOKIE_NAME, '', {
+      maxAge: 0,
       httpOnly: true,
-      secure: __prod__,
-      expires: new Date(0),
       sameSite: 'strict',
+      secure: __prod__,
+      path: '/',
     })
   );
 }

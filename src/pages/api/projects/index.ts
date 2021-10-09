@@ -1,15 +1,24 @@
+import BoardModel from '@/models/Board';
+import ProjectModel from '@/models/Project';
+import ColumnModel from '@/models/Column';
 import { getUserFromCookie } from '@/helpers/cookieHelper';
 import apiWrapper from '@/libs/apiWrapper';
-import BoardModel, { LabelsEnum } from '@/models/Board';
-import ProjectModel from '@/models/Project';
 
 export default apiWrapper(async (req, res) => {
   switch (req.method) {
     case 'GET': {
-      const projects = await ProjectModel.find()
-        .populate('creator')
-        .select('-creator.password');
-      return res.json({ projects: projects.map((p) => p.toJSON()) });
+      const projects = await ProjectModel.aggregate().lookup({
+        from: 'boards',
+        as: 'boards',
+        localField: '_id',
+        foreignField: 'projectId',
+      });
+
+      await ProjectModel.populate(projects, {
+        path: 'creator',
+        select: { 'creator.password': 0 },
+      });
+      return res.json({ projects });
     }
     case 'POST': {
       const userId = getUserFromCookie(req, res, true);
@@ -19,7 +28,7 @@ export default apiWrapper(async (req, res) => {
       const existingProject = await ProjectModel.findOne({
         name,
         creator: userId,
-      });
+      }).lean();
 
       if (existingProject) {
         return res
@@ -27,25 +36,35 @@ export default apiWrapper(async (req, res) => {
           .json({ error: `project name ${name} is already taken` });
       }
 
-      const testBoard = new BoardModel({
-        title: 'test board',
-        description: 'this is a test board',
-        label: LabelsEnum.question,
-        author: userId,
-      });
-
-      await testBoard.save();
-
-      const newProject = new ProjectModel({
+      const project = await ProjectModel.create({
         name,
         description,
         creator: userId,
-        boards: [testBoard],
       });
 
-      await newProject.save();
+      const columns = await ColumnModel.create([
+        { title: 'todo', projectId: project._id },
+        { title: 'in progress', projectId: project._id },
+        { title: 'completed', projectId: project._id },
+      ]);
 
-      return res.status(201).json({ project: newProject.toJSON() });
+      const board = await BoardModel.create({
+        title: `tasks for ${name}`,
+        description: 'this is a test board',
+        projectId: project._id,
+        columnId: columns[0]._id,
+        author: userId,
+      });
+
+      return res.status(201).json({
+        project: {
+          ...project.toJSON(),
+          columns: columns.map((col) => ({
+            ...col.toJSON(),
+            boards: [board.toJSON()],
+          })),
+        },
+      });
     }
   }
 });

@@ -2,43 +2,33 @@ import axios from 'axios';
 import Head from 'next/head';
 import { GetServerSideProps, NextPage } from 'next';
 import { Project } from '@/models/Project';
-import dayjs from 'dayjs';
-import { useState } from 'react';
-import { FaEllipsisV } from 'react-icons/fa';
-import { Board, ColumnsEnum } from '@/models/Board';
-import Boards from '@/components/boards/Boards';
+import ColumnBoards from '@/components/columns/ColumnBoards';
+import BoardModalProvider from '@/context/BoardModalContext';
+import ProjectProvider, { ProjectState } from '@/context/ProjectContext';
+import ProjectInfo from '@/components/ProjectInfo';
+import { resetServerContext } from 'react-beautiful-dnd';
 
-const ProjectPage: NextPage<{ project: Project }> = ({ project }) => {
-  const [data, setData] = useState(project);
-
+const ProjectPage: NextPage<{ project: ProjectState }> = ({ project }) => {
+  console.log(project);
   return (
-    <div>
+    <ProjectProvider project={project}>
       <Head>
         <title>finlabs - {project.name}</title>
       </Head>
-      <section className='grid grid-cols-1 gap-10 md:grid-cols-2'>
-        <div>
-          <h1 className='text-4xl font-bold'>{data.name}</h1>
-          <p className='text-lg'>{data.description}</p>
-          <small className='text-sm text-gray-400'>
-            updated {dayjs(data.createdAt).fromNow()}
-          </small>
-        </div>
-        <aside>
-          <div className='flex items-center space-x-3'>
-            boards - {data.boards.length}
-          </div>
-        </aside>
-      </section>
+      <ProjectInfo />
       {/* Boards */}
-      <Boards projectId={data._id} boards={data.boards} />
-    </div>
+      <BoardModalProvider>
+        <ColumnBoards />
+      </BoardModalProvider>
+    </ProjectProvider>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   try {
     const res = await axios.get(`/projects/${query.projectId}`);
+    resetServerContext();
+    console.log(res.data);
     return { props: { project: res.data.project } };
   } catch (err) {
     console.error(err);

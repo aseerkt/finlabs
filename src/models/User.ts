@@ -1,4 +1,4 @@
-import mongoose, { Document, model, Schema } from 'mongoose';
+import { Document, model, models, Model, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface User extends Document {
@@ -15,7 +15,7 @@ interface IUser extends User {
 const UserSchema = new Schema<IUser>({
   username: { type: String, unique: true, required: true },
   email: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
   avatar: { type: String, required: true },
 });
 
@@ -28,6 +28,7 @@ UserSchema.methods.verifyPassword = function (password: string) {
   return bcrypt.compare(password, this.password);
 };
 
-const UserModel = mongoose.models?.User || model<IUser>('User', UserSchema);
+const UserModel =
+  (models?.User as Model<IUser>) || model<IUser>('User', UserSchema);
 
 export default UserModel;

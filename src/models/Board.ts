@@ -1,5 +1,14 @@
+import { Column } from '@/models/Column';
+import { Project } from '@/models/Project';
 import { User } from '@/models/User';
-import mongoose, { model, PopulatedDoc, Schema, Document } from 'mongoose';
+import mongoose, {
+  model,
+  PopulatedDoc,
+  Schema,
+  Document,
+  Model,
+  ObjectId,
+} from 'mongoose';
 
 export enum LabelsEnum {
   bug = 'bug',
@@ -9,38 +18,36 @@ export enum LabelsEnum {
   question = 'question',
 }
 
-export enum ColumnsEnum {
-  todo = 'todo',
-  in_progress = 'in progress',
-  completed = 'completed',
-}
-
 export const Labels = Object.values(LabelsEnum);
-export const Columns = Object.values(ColumnsEnum);
 
-export interface Board extends Document {
+export interface IBoard {
+  _id: string;
   title: string;
   description?: string;
   label: LabelsEnum;
-  column: ColumnsEnum;
-  assignee: PopulatedDoc<User>;
   author: PopulatedDoc<User>;
+  columnId: PopulatedDoc<Column>;
+  projectId: PopulatedDoc<Project>;
   createdAt: number;
   updatedAt: number;
 }
+
+export interface Board extends Omit<IBoard, '_id'>, Document {}
 
 const BoardSchema = new Schema<Board>(
   {
     title: { type: String, required: true },
     description: String,
     label: { type: String, enum: Labels },
-    column: { type: String, enum: Columns, default: ColumnsEnum.todo },
-    assignee: { type: 'ObjectId', ref: 'User' },
-    author: { type: 'ObjectId', ref: 'User' },
+    author: { type: Schema.Types.ObjectId, ref: 'User' },
+    columnId: { type: Schema.Types.ObjectId, ref: 'Column' },
+    projectId: { type: Schema.Types.ObjectId, required: true, ref: 'Project' },
   },
   { timestamps: true }
 );
 
-const BoardModel = mongoose.models?.Board || model<Board>('Board', BoardSchema);
+const BoardModel =
+  (mongoose.models?.Board as Model<Board>) ||
+  model<Board>('Board', BoardSchema);
 
 export default BoardModel;

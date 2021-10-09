@@ -41,7 +41,7 @@ const ProjectsPage: NextPage<{ projects: Project[] }> = ({ projects }) => {
                 <p>Boards</p>
               </div>
               <div className='flex-1 p-2 text-right border-l border-gray-800'>
-                <p className='font-semibold'>{p.boards.length}</p>
+                <p className='font-semibold'>{p.boards?.length}</p>
               </div>
             </div>
           </div>
