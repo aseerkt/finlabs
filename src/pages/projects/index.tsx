@@ -2,22 +2,21 @@ import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Project } from '@/models/Project';
-import { useState } from 'react';
 import Avatar from '@/shared/Avatar';
 import { FaKeyboard } from 'react-icons/fa';
 import dayjs from 'dayjs';
+import { ProjectState } from '@/context/ProjectContext';
 
-const ProjectsPage: NextPage<{ projects: Project[] }> = ({ projects }) => {
-  const [data, setData] = useState(projects);
-
+const ProjectsPage: NextPage<{ projects: Omit<ProjectState, 'columns'>[] }> = ({
+  projects,
+}) => {
   return (
     <div>
       <Head>
         <title>finlab - projects</title>
       </Head>
       <div className='grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3'>
-        {data.map((p) => (
+        {projects.map((p) => (
           <div
             key={p._id}
             className='p-8 mb-5 bg-gray-900 border border-gray-800 rounded-md shadow-2xl'
