@@ -1,7 +1,6 @@
 import { getUserFromCookie } from '@/helpers/cookieHelper';
 import apiWrapper from '@/libs/apiWrapper';
-import BoardModel from '@/models/Board';
-import ColumnModel from '@/models/Column';
+import BoardModel, { IBoard } from '@/models/Board';
 
 export default apiWrapper(async (req, res) => {
   const { projectId, boardId } = req.query;
@@ -9,11 +8,16 @@ export default apiWrapper(async (req, res) => {
 
   switch (req.method) {
     case 'PUT': {
+      const boardToEdit: Partial<IBoard> = {
+        title: req.body.board.title,
+        description: req.body.board.description,
+        columnId: req.body.board.columnId,
+      };
       const boardEditResult = await BoardModel.updateOne(
         {
           where: { project: projectId, _id: boardId, author: userId },
         },
-        { $set: req.body.board },
+        { $set: boardToEdit },
         { lean: true }
       );
       if (!boardEditResult.acknowledged) {

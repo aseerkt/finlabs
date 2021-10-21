@@ -9,7 +9,7 @@ function ProjectInfo() {
     <>
       <section className='grid grid-cols-1 gap-10 md:grid-cols-2'>
         <div>
-          <h1 className='text-4xl font-bold'>
+          <h1 className='mb-2 text-3xl font-bold'>
             {project.creator.username}/{project.name}
           </h1>
           <p className='text-lg'>{project.description}</p>
