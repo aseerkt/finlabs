@@ -14,7 +14,7 @@ const loginHandler: NextApiHandler = async (req, res) => {
         usernameOrEmail?.includes('@')
           ? { email: usernameOrEmail }
           : { username: usernameOrEmail }
-      );
+      ).select('+password');
 
       if (!user)
         return res.status(400).json({ error: 'incorrect email or username' });
@@ -25,7 +25,9 @@ const loginHandler: NextApiHandler = async (req, res) => {
       }
 
       setTokenCookie(res, user._id);
-      return res.status(200).json({ user: user.toJSON() });
+      return res
+        .status(200)
+        .json({ user: { ...user.toJSON(), password: undefined } });
     }
   }
 };
