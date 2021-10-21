@@ -34,7 +34,7 @@ function Login() {
               const res = await axios.post('/users/login', values);
               if (res.data.user) {
                 setUser(res.data.user);
-                router.push('/');
+                router.push('/projects');
               }
             } catch (err) {
               if (err.response.data) {
