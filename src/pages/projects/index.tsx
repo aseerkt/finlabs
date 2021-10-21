@@ -22,7 +22,7 @@ const ProjectsPage: NextPage<{ projects: Omit<ProjectState, 'columns'>[] }> = ({
             className='p-8 mb-5 bg-gray-900 border border-gray-800 rounded-md shadow-2xl'
           >
             <Link href={`/projects/${p._id}`}>
-              <h1 className='pb-3 mb-5 text-3xl font-bold border-b border-gray-800 cursor-pointer hover:text-gray-500 w-max'>
+              <h1 className='pb-3 mb-5 text-3xl font-bold border-b border-gray-800 cursor-pointer hover:underline w-max'>
                 {p.name}
               </h1>
             </Link>

@@ -16,7 +16,7 @@ type BoardActionPayload = {
 };
 
 type ProjectActionPayload = {
-  project: IProject;
+  project: Partial<IProject>;
 };
 
 interface ProjectAction {
@@ -41,11 +41,10 @@ const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
   switch (action.type) {
     case 'EDIT_PROJECT':
       const { project } = action.payload as ProjectActionPayload;
-      draft = {
-        ...draft,
-        ...project,
-      };
-      break;
+      draft.name = project.name;
+      draft.description = project.description;
+      draft.sourceCode = project.sourceCode;
+      draft.website = project.website;
       break;
     case 'ADD_BOARD': {
       const { board } = action.payload as BoardActionPayload;
@@ -76,7 +75,7 @@ const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
 
 interface ProjectContextType {
   project: ProjectState;
-  editProject: (project: IProject) => Promise<void>;
+  editProject: (project: Partial<IProject>) => Promise<void>;
   deleteProject: () => Promise<void>;
   addBoard: (board: Partial<IBoard>) => Promise<void>;
   deleteBoard: (boardId: string) => Promise<void>;

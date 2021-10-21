@@ -34,7 +34,7 @@ export const Modal: React.FC<ModalProps> = ({ children, isOpen }) => {
 
 export const ModalContent: React.FC = ({ children }) => {
   return (
-    <div className='relative py-20 h-full max-w-sm max-h-[calc(100vh-10rem)] mx-auto mt-12 bg-gray-900 rounded-md'>
+    <div className='relative py-20 h-full max-w-sm max-h-[calc(100vh-5rem)] mx-auto mt-12 bg-gray-900 rounded-md'>
       {children}
     </div>
   );
