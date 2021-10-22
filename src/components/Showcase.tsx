@@ -9,10 +9,9 @@ function Showcase() {
             <span className='text-blue-700'>fin</span>labs
           </h1>
           <p className='my-4 text-lg xl:text-3xl md:w-3/4'>
-            find collabs, share projects and <br /> manage task boards among
-            peers.
+            find collabs, share projects and manage task boards among peers.
           </p>
-          <div className='flex items-center space-x-4'>
+          <div className='flex items-center mt-4 space-x-4'>
             <Link href='/login'>
               <a className='text-xl font-bold btn btn-outline w-max'>
                 get started
