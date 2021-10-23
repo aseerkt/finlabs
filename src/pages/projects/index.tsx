@@ -14,6 +14,7 @@ const ProjectsPage: NextPage<{ projects: Omit<ProjectState, 'columns'>[] }> = ({
     <div>
       <Head>
         <title>finlab - projects</title>
+        <meta name='description' content='Collab projects' />
       </Head>
       <div className='grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3'>
         {projects.map((p) => (

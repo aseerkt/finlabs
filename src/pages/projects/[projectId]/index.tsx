@@ -13,7 +13,10 @@ const ProjectPage: NextPage<{ project: ProjectState }> = ({ project }) => {
   return (
     <ProjectProvider project={project}>
       <Head>
-        <title>finlabs - {project.name}</title>
+        <title>
+          finlabs - {project.creator.username}/{project.name}
+        </title>
+        <meta name='description' content={project.description} />
       </Head>
       <ProjectInfo />
       {/* Boards */}
