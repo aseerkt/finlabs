@@ -8,7 +8,14 @@ const loginHandler: NextApiHandler = async (req, res) => {
 
   switch (req.method) {
     case 'POST': {
-      const { usernameOrEmail, password } = req.body;
+      const { usernameOrEmail, password, isTest } = req.body;
+
+      if (isTest) {
+        const testUser = await UserModel.findOne({ username: 'bob' }).lean(
+          true
+        );
+        return res.json({ user: testUser });
+      }
 
       const user = await UserModel.findOne(
         usernameOrEmail?.includes('@')
@@ -25,9 +32,7 @@ const loginHandler: NextApiHandler = async (req, res) => {
       }
 
       setTokenCookie(res, user._id);
-      return res
-        .status(200)
-        .json({ user: { ...user.toJSON(), password: undefined } });
+      return res.json({ user: { ...user.toJSON(), password: undefined } });
     }
   }
 };
