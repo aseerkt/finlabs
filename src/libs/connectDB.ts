@@ -1,5 +1,6 @@
 // https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/lib/dbConnect.js
 
+import { __prod__ } from '@/helpers/constants';
 import mongoose from 'mongoose';
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -28,7 +29,8 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGO_URI).then((mongoose) => {
+    mongoose.set('debug', true);
+    cached.promise = mongoose.connect(MONGO_URI, {}).then((mongoose) => {
       return mongoose;
     });
   }
