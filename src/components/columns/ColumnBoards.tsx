@@ -72,6 +72,9 @@ function ColumnBoards() {
                             <div className='px-2 pb-2'>
                               <p className='font-thin'>{b.description}</p>
                             </div>
+                            <small className='inline-block px-2 pb-2 text-gray-300'>
+                              Added by {b.author?.username}
+                            </small>
                           </article>
                         )}
                       </Draggable>
