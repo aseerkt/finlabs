@@ -14,7 +14,7 @@ function ColumnBoards() {
   const { setBoardModal } = useBoardModal();
 
   return (
-    <section className='grid grid-cols-3 gap-3 my-20 md:gap-5'>
+    <section className='grid gap-3 my-20 md:grid-cols-3 md:gap-5'>
       <DragDropContext onDragEnd={onDragEnd}>
         {columns.map((column) => (
           <div

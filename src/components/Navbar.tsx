@@ -15,8 +15,8 @@ function Navbar() {
       <header className='w-screen h-16 bg-gray-800 shadow'>
         <nav className='container flex items-center h-full'>
           <Link href='/'>
-            <a className='text-xl font-bold'>
-              <span className='text-blue-700'>fin</span>labs
+            <a className='text-2xl font-bold'>
+              <span className='text-blue-600'>fin</span>labs
             </a>
           </Link>
           <div className='flex items-center ml-auto space-x-3'>
