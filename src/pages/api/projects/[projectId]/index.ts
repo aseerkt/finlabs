@@ -2,6 +2,8 @@ import { Types } from 'mongoose';
 import ProjectModel from '@/models/Project';
 import apiWrapper from '@/libs/apiWrapper';
 import { getUserFromCookie } from '@/helpers/cookieHelper';
+import UserModel from '@/models/User';
+import BoardModel from '@/models/Board';
 
 export default apiWrapper(async function (req, res) {
   switch (req.method) {
@@ -14,20 +16,34 @@ export default apiWrapper(async function (req, res) {
           foreignField: 'projectId',
           as: 'columns',
         })
+
         .lookup({
-          from: 'boards',
-          localField: '_id',
-          foreignField: 'projectId',
-          as: 'boards',
-        });
+          from: 'users',
+          localField: 'creator',
+          foreignField: '_id',
+          as: 'creator',
+        })
+        .unwind('creator')
+        .project({ 'creator.password': 0 });
+
+      const boards = await BoardModel.aggregate()
+        .match({
+          projectId: new Types.ObjectId(req.query.projectId as string),
+        })
+        .lookup({
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author',
+        })
+        .unwind('author')
+        .project({ 'author.password': 0 });
 
       if (!project.length) {
         return res.status(404).json({ error: 'Project not found' });
       }
 
-      await ProjectModel.populate(project, { path: 'boards.author creator' });
-
-      return res.json({ project: project[0] });
+      return res.json({ project: { ...project[0], boards } });
     }
 
     case 'PUT':
