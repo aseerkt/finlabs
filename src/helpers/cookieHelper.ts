@@ -27,16 +27,13 @@ export function getUserFromCookie(
   try {
     const token =
       req?.headers?.cookie && cookie.parse(req.headers.cookie)[COOKIE_NAME];
-    if (!token) return null;
+    if (!token) throw Error('No token');
     const payload: any = getPayload(token);
     return payload.userId;
   } catch (err) {
-    console.error(err.message);
-    if (strict) {
-      res.status(401);
-      throw err;
-    }
-    return null;
+    if (!strict) return null;
+    res.status(401);
+    res.json({ error: err.message });
   }
 }
 

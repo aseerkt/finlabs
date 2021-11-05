@@ -11,44 +11,43 @@ function ProjectInfo() {
   return (
     <>
       <section className='grid grid-cols-1 gap-10 md:grid-cols-2'>
-        <div className='flex flex-col justify-between h-full'>
-          <header>
-            <h1 className='mb-2 text-3xl font-bold hover:underline'>
-              {project.creator.username}/{project.name}
-            </h1>
-            <p className='text-lg'>{project.description}</p>
-            <div className='flex items-center my-2 space-x-3 text-sm text-gray-400'>
-              created at {dayjs(project.createdAt).format('DD MMM YYYY')}
-            </div>
-            <div className='flex items-center my-2 space-x-3'>
-              {project.sourceCode && (
-                <a
-                  title='Source Code'
-                  className='hover:text-blue-700 hover:underline'
-                  href={project.sourceCode}
-                  rel='noreferrer'
-                  target='_blank'
-                >
-                  <FaGithubSquare size='2.3em' />
-                </a>
-              )}
-              {project.website && (
-                <a
-                  title='Website'
-                  className='hover:text-blue-700 hover:underline'
-                  href={project.website}
-                  rel='noreferrer'
-                  target='_blank'
-                >
-                  <FaLink size='2em' />
-                </a>
-              )}
-            </div>
-          </header>
-        </div>
+        <header className='flex flex-col justify-between h-full'>
+          <h1 className='mb-2 text-3xl font-bold'>
+            {project.creator.username}/{project.name}
+          </h1>
+          <p className='text-lg'>{project.description}</p>
+
+          <div className='flex items-center my-2 space-x-3'>
+            {project.sourceCode && (
+              <a
+                title='Source Code'
+                className='hover:text-blue-700 hover:underline'
+                href={project.sourceCode}
+                rel='noreferrer'
+                target='_blank'
+              >
+                <FaGithubSquare size='2.3em' />
+              </a>
+            )}
+            {project.website && (
+              <a
+                title='Website'
+                className='hover:text-blue-700 hover:underline'
+                href={project.website}
+                rel='noreferrer'
+                target='_blank'
+              >
+                <FaLink size='2em' />
+              </a>
+            )}
+          </div>
+          <div className='flex items-center my-2 space-x-3 text-sm text-gray-400'>
+            created at {dayjs(project.createdAt).format('DD MMM YYYY')}
+          </div>
+        </header>
         <aside className='flex flex-col justify-between h-full'>
           <div>
-            <div className='flex items-center mt-4 overflow-hidden border border-gray-800 rounded-md w-36'>
+            <div className='flex items-center overflow-hidden border border-gray-800 rounded-md w-36'>
               <div className='flex items-center p-2 space-x-2 bg-gray-800 shadow-inner'>
                 <FaKeyboard />
                 <p>Boards</p>

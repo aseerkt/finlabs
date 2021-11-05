@@ -7,17 +7,22 @@ import apiWrapper from '@/libs/apiWrapper';
 export default apiWrapper(async (req, res) => {
   switch (req.method) {
     case 'GET': {
-      const projects = await ProjectModel.aggregate().lookup({
-        from: 'boards',
-        as: 'boards',
-        localField: '_id',
-        foreignField: 'projectId',
-      });
+      const projects = await ProjectModel.aggregate()
+        .lookup({
+          from: 'boards',
+          as: 'boards',
+          localField: '_id',
+          foreignField: 'projectId',
+        })
+        .lookup({
+          from: 'users',
+          localField: 'creator',
+          foreignField: '_id',
+          as: 'creator',
+        })
+        .unwind('creator')
+        .project({ 'creator.password': 0 });
 
-      await ProjectModel.populate(projects, {
-        path: 'creator',
-        select: { 'creator.password': 0 },
-      });
       return res.json({ projects });
     }
     case 'POST': {
@@ -42,19 +47,23 @@ export default apiWrapper(async (req, res) => {
         creator: userId,
       });
 
+      const boards = await BoardModel.create([
+        {
+          title: `tasks for ${name}`,
+          description: 'this is a test board',
+          projectId: project._id,
+          author: userId,
+        },
+      ]);
+
       const columns = await ColumnModel.create([
-        { title: 'todo', projectId: project._id },
+        { title: 'todo', projectId: project._id, boards },
         { title: 'in progress', projectId: project._id },
         { title: 'completed', projectId: project._id },
       ]);
 
-      const board = await BoardModel.create({
-        title: `tasks for ${name}`,
-        description: 'this is a test board',
-        projectId: project._id,
-        columnId: columns[0]._id,
-        author: userId,
-      });
+      project.columns = columns;
+      await project.save();
 
       return res.status(201).json({
         project: project.toJSON(),

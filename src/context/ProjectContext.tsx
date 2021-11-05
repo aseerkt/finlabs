@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer } from 'react';
-import { OnDragEndResponder } from 'react-beautiful-dnd';
+import { isEqual } from 'lodash';
+import { DropResult, OnDragEndResponder } from 'react-beautiful-dnd';
 import { IProject } from '@/models/Project';
 import { User } from '@/models/User';
 import produce from 'immer';
@@ -27,8 +28,9 @@ interface ProjectAction {
     | 'EDIT_BOARD'
     | 'DELETE_BOARD'
     | 'CLEAR_COLUMN'
-    | 'SET_COLUMN';
-  payload?: string | BoardActionPayload | ProjectActionPayload;
+    | 'SET_COLUMN'
+    | 'DRAG_BOARD';
+  payload?: string | BoardActionPayload | ProjectActionPayload | DropResult;
 }
 
 export interface ProjectState extends Omit<IProject, 'creator'> {
@@ -47,12 +49,22 @@ const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
       draft.website = project.website;
       break;
     case 'ADD_BOARD': {
-      const { board } = action.payload as BoardActionPayload;
+      const { board, columnId } = action.payload as BoardActionPayload;
       draft.boards.push(board as IBoard);
+      const columnIndex = draft.columns.findIndex(
+        (col) => col._id === columnId
+      );
+      draft.columns[columnIndex].boards.unshift(board._id);
       break;
     }
     case 'DELETE_BOARD': {
-      const { boardId } = action.payload as BoardActionPayload;
+      const { boardId, columnId } = action.payload as BoardActionPayload;
+      const columnIndex = draft.columns.findIndex(
+        (col) => col._id === columnId
+      );
+      draft.columns[columnIndex].boards = draft.columns[
+        columnIndex
+      ].boards.filter((id) => id !== boardId);
       draft.boards = draft.boards.filter((b) => b._id !== boardId);
       break;
     }
@@ -64,9 +76,26 @@ const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
     }
     case 'CLEAR_COLUMN': {
       const columnId = action.payload;
-      draft.boards = draft.boards.filter((b) => b.columnId !== columnId);
+      const boards = draft.columns.find((col) => col._id === columnId).boards;
+      draft.boards = draft.boards.filter((b) => !boards.includes(b._id));
       break;
     }
+    case 'DRAG_BOARD':
+      const { draggableId, source, destination } = action.payload as DropResult;
+      if (!destination || isEqual(source, destination)) break;
+      const sourceColumnIndex = draft.columns.findIndex(
+        (col) => col._id === source.droppableId
+      );
+      const destColumnIndex = draft.columns.findIndex(
+        (col) => col._id === destination.droppableId
+      );
+      draft.columns[sourceColumnIndex].boards.splice(source.index, 1);
+      draft.columns[destColumnIndex].boards.splice(
+        destination.index,
+        0,
+        draggableId
+      );
+      break;
     case 'DELETE_PROJECT':
     default:
       break;
@@ -77,9 +106,9 @@ interface ProjectContextType {
   project: ProjectState;
   editProject: (project: Partial<IProject>) => Promise<void>;
   deleteProject: () => Promise<void>;
-  addBoard: (board: Partial<IBoard>) => Promise<void>;
-  deleteBoard: (boardId: string) => Promise<void>;
-  editBoard: (boardToEdit: IBoard) => Promise<void>;
+  addBoard: (board: Partial<IBoard>, columnId: string) => Promise<void>;
+  deleteBoard: (boardId: string, columnId: string) => Promise<void>;
+  editBoard: (boardToEdit: IBoard, columnId: string) => Promise<void>;
   clearColumn: (columnId: string) => Promise<void>;
   onDragEnd: OnDragEndResponder;
 }
@@ -108,20 +137,29 @@ const ProjectProvider: React.FC<{ project: ProjectState }> = ({
     }
   };
 
-  const addBoard: ProjectContextType['addBoard'] = async (board) => {
-    const res = await axios.post(`/projects/${state._id}/boards`, { board });
+  const addBoard: ProjectContextType['addBoard'] = async (
+    boardData,
+    columnId
+  ) => {
+    const res = await axios.post(`/projects/${state._id}/boards`, {
+      boardData,
+      columnId,
+    });
     if (res.data.board) {
       dispatch({
         type: 'ADD_BOARD',
-        payload: { board: res.data.board as IBoard },
+        payload: { board: res.data.board as IBoard, columnId },
       });
     }
   };
 
-  const deleteBoard: ProjectContextType['deleteBoard'] = async (boardId) => {
+  const deleteBoard: ProjectContextType['deleteBoard'] = async (
+    boardId,
+    columnId
+  ) => {
     const res = await axios.delete(`/projects/${state._id}/boards/${boardId}`);
     if (res.status === 200)
-      dispatch({ type: 'DELETE_BOARD', payload: { boardId } });
+      dispatch({ type: 'DELETE_BOARD', payload: { boardId, columnId } });
   };
 
   const editBoard: ProjectContextType['editBoard'] = async (boardToEdit) => {
@@ -141,9 +179,30 @@ const ProjectProvider: React.FC<{ project: ProjectState }> = ({
       dispatch({ type: 'CLEAR_COLUMN', payload: columnId });
   };
 
-  const onDragEnd: OnDragEndResponder = (result) => {
-    console.log(result);
-    const {} = result;
+  const onDragEnd: OnDragEndResponder = async (result) => {
+    const { destination, source } = result;
+    if (!destination || isEqual(source, destination)) return;
+    dispatch({
+      type: 'DRAG_BOARD',
+      payload: result,
+    });
+    try {
+      const res = await axios.post(
+        `/projects/${state._id}/boards/drag`,
+        result
+      );
+      console.log(res);
+    } catch (err) {
+      alert(err.message);
+      dispatch({
+        type: 'DRAG_BOARD',
+        payload: {
+          ...result,
+          source: result.destination,
+          destination: result.source,
+        },
+      });
+    }
   };
 
   return (

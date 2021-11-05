@@ -8,7 +8,7 @@ import BoardModel from '@/models/Board';
 export default apiWrapper(async function (req, res) {
   switch (req.method) {
     case 'GET': {
-      const project = await ProjectModel.aggregate()
+      const projects = await ProjectModel.aggregate()
         .match({ _id: new Types.ObjectId(req.query.projectId as string) })
         .lookup({
           from: 'columns',
@@ -16,7 +16,6 @@ export default apiWrapper(async function (req, res) {
           foreignField: 'projectId',
           as: 'columns',
         })
-
         .lookup({
           from: 'users',
           localField: 'creator',
@@ -39,11 +38,11 @@ export default apiWrapper(async function (req, res) {
         .unwind('author')
         .project({ 'author.password': 0 });
 
-      if (!project.length) {
+      if (!projects.length) {
         return res.status(404).json({ error: 'Project not found' });
       }
 
-      return res.json({ project: { ...project[0], boards } });
+      return res.json({ project: { ...projects[0], boards } });
     }
 
     case 'PUT':

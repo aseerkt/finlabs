@@ -22,11 +22,9 @@ function Login() {
   >('/users/login');
 
   useEffect(() => {
-    if (result) {
-      if (result.user) {
-        setUser(result.user);
-        router.push('/projects');
-      }
+    if (result?.user) {
+      setUser(result.user);
+      router.push('/projects');
     }
   }, [result]);
 

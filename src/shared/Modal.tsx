@@ -34,7 +34,7 @@ export const Modal: React.FC<ModalProps> = ({ children, isOpen }) => {
 
 export const ModalContent: React.FC = ({ children }) => {
   return (
-    <div className='relative py-20 h-full max-w-sm max-h-[calc(100vh-5rem)] mx-auto mt-12 bg-gray-900 rounded-md'>
+    <div className='relative py-20 max-w-sm max-h-[100vh-1rem] mx-auto mt-12 bg-gray-900 rounded-md'>
       {children}
     </div>
   );
@@ -70,7 +70,7 @@ export const ModalFooter: React.FC<ModalCloseProps> = ({
     <footer className='absolute inset-x-0 bottom-0 flex items-center justify-end h-16 p-5 space-x-2 border-t border-gray-700'>
       {children}
       {isClosable && onClose && (
-        <Button variant='outline' onClick={onClose}>
+        <Button type='button' variant='outline' onClick={onClose}>
           Close
         </Button>
       )}

@@ -12,9 +12,9 @@ function Navbar() {
 
   return (
     <>
-      <header className='w-screen h-16 bg-gray-800 shadow'>
+      <header className='fixed inset-0 w-screen h-16 bg-gray-800 shadow'>
         <nav className='container flex items-center h-full'>
-          <Link href='/'>
+          <Link href={user ? '/projects' : '/'}>
             <a className='text-2xl font-bold'>
               <span className='text-blue-600'>fin</span>labs
             </a>
@@ -46,7 +46,7 @@ function Navbar() {
           </div>
         </nav>
       </header>
-      <div className='flex h-16'></div>
+      <div className='flex h-28'></div>
     </>
   );
 }

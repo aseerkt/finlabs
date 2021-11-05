@@ -9,7 +9,6 @@ import ProjectInfo from '@/components/ProjectInfo';
 import { resetServerContext } from 'react-beautiful-dnd';
 
 const ProjectPage: NextPage<{ project: ProjectState }> = ({ project }) => {
-  console.log(project);
   return (
     <ProjectProvider project={project}>
       <Head>
