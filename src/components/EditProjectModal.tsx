@@ -62,7 +62,7 @@ const EditProjectModal = () => {
                     placeholder='https://octokit.com'
                   />
 
-                  <ModalFooter>
+                  <ModalFooter isClosable onClose={onClose}>
                     <Button
                       type='submit'
                       isLoading={isSubmitting}
