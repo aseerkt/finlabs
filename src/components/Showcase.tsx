@@ -1,9 +1,10 @@
 import Link from 'next/link';
+import { FaGithub } from 'react-icons/fa';
 
 function Showcase() {
   return (
-    <div className='container'>
-      <div className='grid grid-cols-1 gap-10 sm:grid-cols-2'>
+    <div className='container h-[100vh-4rem]'>
+      <div className='grid items-center grid-cols-1 gap-10 sm:grid-cols-2'>
         <div className='flex flex-col items-center justify-center text-center sm:items-start sm:text-left'>
           <h1 className='text-4xl font-bold xl:text-6xl'>
             <span className='text-blue-700'>fin</span>labs
@@ -11,7 +12,7 @@ function Showcase() {
           <p className='my-4 text-lg xl:text-3xl md:w-3/4'>
             find collabs, share projects and manage task boards among peers.
           </p>
-          <div className='flex items-center mt-4 space-x-4'>
+          <div className='flex flex-col items-center mt-4 space-y-2 sm:space-y-0 sm:space-x-4 sm:flex-row'>
             <Link href='/login'>
               <a className='text-xl font-bold btn btn-outline w-max'>
                 get started
@@ -22,7 +23,7 @@ function Showcase() {
             </Link>
           </div>
         </div>
-        <div className="relative flex items-center before:absolute before:content-[''] before:w-full before:h-full before:left-full before:bg-blue-700 p-5 py-7 bg-blue-700 ">
+        <div className='relative flex items-center p-5 bg-blue-700 py-7 '>
           <img
             className='object-contain h-full'
             src='/showcase_hero.svg'

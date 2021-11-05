@@ -5,6 +5,7 @@ import { useProject } from '@/context/ProjectContext';
 import { Board } from '@/models/Board';
 import { FaPlus } from 'react-icons/fa';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { useAuth } from '@/context/AuthContext';
 
 function ColumnBoards() {
   const {
@@ -12,6 +13,7 @@ function ColumnBoards() {
     onDragEnd,
   } = useProject();
   const { setBoardModal } = useBoardModal();
+  const { user } = useAuth();
 
   return (
     <section className='grid gap-3 my-20 md:grid-cols-3 md:gap-5'>
@@ -24,61 +26,64 @@ function ColumnBoards() {
             <header className='flex items-center justify-between p-3 border-b border-gray-600'>
               <div className='flex items-center space-x-2'>
                 <div className='flex items-center justify-center w-6 h-6 bg-gray-700 rounded-full'>
-                  <span className='text-sm'>
-                    {boards.filter((b) => b.columnId === column._id).length}
-                  </span>
+                  <span className='text-sm'>{column.boards.length}</span>
                 </div>
                 <h2 className='text-lg font-bold'>{column.title}</h2>
               </div>
               <div className='flex items-center space-x-3'>
-                <>
-                  <button
-                    onClick={() =>
-                      setBoardModal({
-                        columnId: column._id,
-                        title: column.title,
-                      })
-                    }
-                  >
-                    <FaPlus />
-                  </button>
-                </>
+                <button
+                  hidden={!user}
+                  onClick={() =>
+                    setBoardModal({
+                      columnId: column._id,
+                      title: column.title,
+                    })
+                  }
+                >
+                  <FaPlus />
+                </button>
+
                 <ColumnMenu columnId={column._id} />
               </div>
             </header>
-            <Droppable droppableId={column.title}>
+            <Droppable droppableId={column._id}>
               {(provided) => (
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                   className='p-3 overflow-y-auto h-80'
                 >
-                  {boards
-                    .filter((b) => b.columnId === column._id)
-                    .map((b, index) => (
-                      <Draggable key={b._id} draggableId={b._id} index={index}>
+                  {column.boards.map((boardId, index) => {
+                    const board = boards.find((b) => b._id === boardId);
+                    if (!board) return null;
+                    return (
+                      <Draggable
+                        key={`${boardId}_${column._id}`}
+                        draggableId={boardId}
+                        index={index}
+                      >
                         {(provided) => (
                           <article
                             {...provided.dragHandleProps}
                             {...provided.draggableProps}
                             ref={provided.innerRef}
-                            key={b._id}
                             className='w-full mb-3 space-x-1 bg-gray-800 border border-gray-800 rounded-md shadow '
                           >
                             <header className='flex items-center justify-between flex-1 p-2'>
-                              <h1 className='font-semibold'>{b.title}</h1>
-                              <BoardMenu column={column} board={b} />
+                              <h1 className='font-semibold'>{board.title}</h1>
+                              <BoardMenu column={column} board={board} />
                             </header>
                             <div className='px-2 pb-2'>
-                              <p className='font-thin'>{b.description}</p>
+                              <p className='font-thin'>{board.description}</p>
                             </div>
                             <small className='inline-block px-2 pb-2 text-gray-300'>
-                              Added by {b.author?.username}
+                              Added by {board.author?.username}
                             </small>
                           </article>
                         )}
                       </Draggable>
-                    ))}
+                    );
+                  })}
                   {provided.placeholder}
                 </div>
               )}

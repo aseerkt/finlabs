@@ -14,7 +14,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html className='overflow-x-hidden'>
         <Head>
           <link rel='icon' href='/favicon.ico' />
         </Head>

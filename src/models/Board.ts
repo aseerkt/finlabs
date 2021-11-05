@@ -26,7 +26,6 @@ export interface IBoard {
   description?: string;
   label: LabelsEnum;
   author: PopulatedDoc<User>;
-  columnId: PopulatedDoc<Column>;
   projectId: PopulatedDoc<Project>;
   createdAt: number;
   updatedAt: number;
@@ -40,7 +39,6 @@ const BoardSchema = new Schema<Board>(
     description: String,
     label: { type: String, enum: Labels },
     author: { type: Schema.Types.ObjectId, ref: 'User' },
-    columnId: { type: Schema.Types.ObjectId, ref: 'Column' },
     projectId: { type: Schema.Types.ObjectId, required: true, ref: 'Project' },
   },
   { timestamps: true }

@@ -1,12 +1,5 @@
-import {
-  Document,
-  Model,
-  model,
-  models,
-  ObjectId,
-  PopulatedDoc,
-  Schema,
-} from 'mongoose';
+import { Document, Model, model, models, PopulatedDoc, Schema } from 'mongoose';
+import { Column } from '@/models/Column';
 import { User } from './User';
 
 export interface IProject {
@@ -15,6 +8,7 @@ export interface IProject {
   description?: string;
   sourceCode?: string;
   website?: string;
+  columns: PopulatedDoc<Column>[];
   creator: PopulatedDoc<User>;
   createdAt: number;
   updatedAt: number;
@@ -28,6 +22,7 @@ const ProjectSchema = new Schema<Project>(
     description: String,
     sourceCode: String,
     website: String,
+    columns: [{ type: Schema.Types.ObjectId, ref: 'Column' }],
     creator: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }

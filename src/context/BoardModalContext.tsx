@@ -35,11 +35,17 @@ function BoardModalProvider({ children }: { children: React.ReactNode }) {
   const setBoardModal: SetModalFunction = (column, board = undefined) => {
     setColumn(column);
     setBoardToEdit(board);
-    onOpen();
   };
 
   useEffect(() => {
+    if (column) onOpen();
+    else onClose();
+    // eslint-diable-next-line react-hooks/exhaustive-deps
+  }, [column]);
+
+  useEffect(() => {
     if (!isOpen) setBoardToEdit(undefined);
+    // eslint-diable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   return (
@@ -65,15 +71,15 @@ function BoardModalProvider({ children }: { children: React.ReactNode }) {
                       description: '',
                       columnId: column?.columnId,
                     }
-                  : boardToEdit
+                  : { ...boardToEdit, columnId: column?.columnId }
               }
               onSubmit={async (values) => {
+                const { columnId, ...board } = values;
                 try {
                   if (!boardToEdit) {
-                    console.log(values);
-                    await addBoard(values);
+                    await addBoard(board, columnId);
                   } else {
-                    await editBoard(values as IBoard);
+                    await editBoard(board as IBoard, columnId);
                   }
                   onClose();
                 } catch (err) {
@@ -95,6 +101,7 @@ function BoardModalProvider({ children }: { children: React.ReactNode }) {
                       </option>
                     ))}
                   </SelectField>
+
                   <ModalFooter isClosable onClose={onClose}>
                     <Button
                       isLoading={isSubmitting}

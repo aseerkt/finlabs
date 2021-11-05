@@ -14,6 +14,7 @@ const loginHandler: NextApiHandler = async (req, res) => {
         const testUser = await UserModel.findOne({ username: 'bob' }).lean(
           true
         );
+        setTokenCookie(res, testUser._id);
         return res.json({ user: testUser });
       }
 
