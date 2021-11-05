@@ -23,7 +23,11 @@ function Showcase() {
             </Link>
           </div>
         </div>
+<<<<<<< HEAD
         <div className='relative flex items-center p-5 bg-blue-700 py-7 '>
+=======
+        <div className='flex items-center p-5 bg-blue-700 py-7'>
+>>>>>>> 83ffb53 (feat: drag n drop (#2))
           <img
             className='object-contain h-full'
             src='/showcase_hero.svg'

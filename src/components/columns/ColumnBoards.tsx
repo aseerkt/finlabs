@@ -33,12 +33,16 @@ function ColumnBoards() {
               <div className='flex items-center space-x-3'>
                 <button
                   hidden={!user}
+<<<<<<< HEAD
                   onClick={() =>
                     setBoardModal({
                       columnId: column._id,
                       title: column.title,
                     })
                   }
+=======
+                  onClick={() => setBoardModal(column._id)}
+>>>>>>> 83ffb53 (feat: drag n drop (#2))
                 >
                   <FaPlus />
                 </button>
@@ -71,7 +75,11 @@ function ColumnBoards() {
                           >
                             <header className='flex items-center justify-between flex-1 p-2'>
                               <h1 className='font-semibold'>{board.title}</h1>
+<<<<<<< HEAD
                               <BoardMenu column={column} board={board} />
+=======
+                              <BoardMenu columnId={column._id} board={board} />
+>>>>>>> 83ffb53 (feat: drag n drop (#2))
                             </header>
                             <div className='px-2 pb-2'>
                               <p className='font-thin'>{board.description}</p>

@@ -14,12 +14,10 @@ import { Form, Formik } from 'formik';
 import { useProject } from '@/context/ProjectContext';
 import { isEmptyObj } from '@/helpers/isEmptyObj';
 
-type ColumnParams = { columnId: string; title: string };
-
-type SetModalFunction = (column: ColumnParams, boardToEdit?: IBoard) => void;
+type SetModalFunction = (column: string, boardToEdit?: IBoard) => void;
 
 interface BoardModalContext {
-  column: ColumnParams;
+  column: string;
   setBoardModal: SetModalFunction;
   modelHelper: ReturnType<typeof useDisclosure>;
 }
@@ -27,21 +25,34 @@ interface BoardModalContext {
 const BoardModalContext = createContext<BoardModalContext>(null);
 
 function BoardModalProvider({ children }: { children: React.ReactNode }) {
-  const [column, setColumn] = useState<ColumnParams | undefined>();
+  const [column, setColumn] = useState<string | undefined>();
   const [boardToEdit, setBoardToEdit] = useState<IBoard | undefined>();
-  const { isOpen, onClose, onOpen, toggle } = useDisclosure();
+  const { isOpen, onClose, onOpen, toggle } = useDisclosure(() =>
+    setColumn(undefined)
+  );
   const { addBoard, editBoard, project } = useProject();
 
-  const setBoardModal: SetModalFunction = (column, board = undefined) => {
-    setColumn(column);
+  const setBoardModal: SetModalFunction = (
+    selectedColumn,
+    board = undefined
+  ) => {
+    console.log('get called', selectedColumn, board);
+    setColumn(selectedColumn);
     setBoardToEdit(board);
   };
 
   useEffect(() => {
+<<<<<<< HEAD
     if (column) onOpen();
     else onClose();
     // eslint-diable-next-line react-hooks/exhaustive-deps
   }, [column]);
+=======
+    if (!column) onClose();
+    else onOpen();
+    // eslint-diable-next-line react-hooks/exhaustive-deps
+  }, [column, isOpen]);
+>>>>>>> 83ffb53 (feat: drag n drop (#2))
 
   useEffect(() => {
     if (!isOpen) setBoardToEdit(undefined);
@@ -69,11 +80,18 @@ function BoardModalProvider({ children }: { children: React.ReactNode }) {
                   ? {
                       title: '',
                       description: '',
-                      columnId: column?.columnId,
+                      columnId: column,
                     }
+<<<<<<< HEAD
                   : { ...boardToEdit, columnId: column?.columnId }
               }
               onSubmit={async (values) => {
+=======
+                  : { ...boardToEdit, columnId: column }
+              }
+              onSubmit={async (values) => {
+                console.log(values);
+>>>>>>> 83ffb53 (feat: drag n drop (#2))
                 const { columnId, ...board } = values;
                 try {
                   if (!boardToEdit) {

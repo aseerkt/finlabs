@@ -18,8 +18,8 @@ const UserMenu: React.FC = ({ children }) => {
         {children}
       </MenuButton>
       <MenuList isOpen={isOpen}>
-        <MenuItem>Your Profile</MenuItem>
-        <MenuItem>Your Projects</MenuItem>
+        {/* <MenuItem>Your Profile</MenuItem>
+        <MenuItem>Your Projects</MenuItem> */}
         <MenuItem
           onClick={async () => {
             const res = await axios.get('/users/logout');

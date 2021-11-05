@@ -1,10 +1,13 @@
 import { useCallback, useState } from 'react';
 
-function useDisclosure() {
+function useDisclosure(onCloseExtension?: () => void) {
   const [isOpen, setIsOpen] = useState(false);
 
   const onOpen = useCallback(() => setIsOpen(true), []);
-  const onClose = useCallback(() => setIsOpen(false), []);
+  const onClose = useCallback(() => {
+    setIsOpen(false);
+    if (onCloseExtension) onCloseExtension();
+  }, []);
   const toggle = () => setIsOpen(!isOpen);
 
   return { isOpen, onOpen, onClose, toggle };

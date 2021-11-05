@@ -2,7 +2,6 @@ import { Types } from 'mongoose';
 import ProjectModel from '@/models/Project';
 import apiWrapper from '@/libs/apiWrapper';
 import { getUserFromCookie } from '@/helpers/cookieHelper';
-import UserModel from '@/models/User';
 import BoardModel from '@/models/Board';
 
 export default apiWrapper(async function (req, res) {
