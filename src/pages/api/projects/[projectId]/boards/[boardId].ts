@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { getUserFromCookie } from '@/helpers/cookieHelper';
 import apiWrapper from '@/libs/apiWrapper';
 import BoardModel, { IBoard } from '@/models/Board';
@@ -31,10 +32,18 @@ export default apiWrapper(async (req, res) => {
         author: userId,
       });
 
-      const column = await ColumnModel.findOne({ boards: boardId });
-      column.boards = column.boards.filter((bid) => bid !== boardId);
+      const columnUpdateResult = await ColumnModel.updateOne(
+        {
+          boards: boardId,
+          projectId,
+        },
+        { $pull: { boards: new Types.ObjectId(boardId as string) } }
+      );
 
-      if (!boardDeleteResult.deletedCount) {
+      if (
+        !boardDeleteResult.deletedCount ||
+        !columnUpdateResult.modifiedCount
+      ) {
         return res.status(400).json({ error: 'Delete board failed' });
       }
 

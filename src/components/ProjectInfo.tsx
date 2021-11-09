@@ -45,7 +45,7 @@ function ProjectInfo() {
             created at {dayjs(project.createdAt).format('DD MMM YYYY')}
           </div>
         </header>
-        <aside className='flex flex-col justify-between h-full'>
+        <aside className='flex flex-col justify-between h-full sm:items-end'>
           <div>
             <div className='flex items-center overflow-hidden border border-gray-800 rounded-md w-36'>
               <div className='flex items-center p-2 space-x-2 bg-gray-800 shadow-inner'>
@@ -56,10 +56,10 @@ function ProjectInfo() {
                 <p className='font-semibold'>{project.boards?.length}</p>
               </div>
             </div>
-            <small className='inline-block my-2 text-sm text-gray-400'>
-              updated {dayjs(project.updatedAt).fromNow()}
-            </small>
           </div>
+          <small className='inline-block my-2 text-sm text-gray-400'>
+            updated {dayjs(project.updatedAt).fromNow()}
+          </small>
           {user?._id === project.creator._id && <EditProjectModal />}
         </aside>
       </section>

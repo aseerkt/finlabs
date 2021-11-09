@@ -20,7 +20,7 @@ export const Modal: React.FC<ModalProps> = ({ children, isOpen }) => {
   return (
     <div
       className={classNames(
-        'fixed inset-0 z-40 w-screen h-screen bg-black bg-opacity-40',
+        'fixed inset-0 z-40 w-screen h-screen bg-black bg-opacity-70',
         {
           block: isOpen,
           hidden: !isOpen,

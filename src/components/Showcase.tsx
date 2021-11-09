@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { FaGithub } from 'react-icons/fa';
 
 function Showcase() {
   return (

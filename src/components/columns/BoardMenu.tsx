@@ -41,12 +41,6 @@ const BoardMenu: React.FC<BoardMenuProps> = ({ columnId, board }) => {
             onClose();
           }}
         >
-<<<<<<< HEAD
-          edit board
-        </MenuItem>
-        <MenuItem onClick={() => deleteBoard(board._id, column._id)}>
-=======
->>>>>>> 83ffb53 (feat: drag n drop (#2))
           delete board
         </MenuItem>
       </MenuList>

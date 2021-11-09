@@ -76,8 +76,12 @@ const projectReducer = produce((draft: ProjectState, action: ProjectAction) => {
     }
     case 'CLEAR_COLUMN': {
       const columnId = action.payload;
-      const boards = draft.columns.find((col) => col._id === columnId).boards;
+      const columnIndex = draft.columns.findIndex(
+        (col) => col._id === columnId
+      );
+      const boards = draft.columns[columnIndex].boards;
       draft.boards = draft.boards.filter((b) => !boards.includes(b._id));
+      draft.columns[columnIndex].boards = [];
       break;
     }
     case 'DRAG_BOARD':

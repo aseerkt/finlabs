@@ -17,7 +17,14 @@ const ColumnMenu: React.FC<{ columnId: string }> = ({ columnId }) => {
         <FaEllipsisV />
       </button>
       <MenuList isOpen={isOpen}>
-        <MenuItem onClick={() => clearColumn(columnId)}>clear column</MenuItem>
+        <MenuItem
+          onClick={() => {
+            clearColumn(columnId);
+            onClose();
+          }}
+        >
+          clear column
+        </MenuItem>
       </MenuList>
     </Menu>
   );

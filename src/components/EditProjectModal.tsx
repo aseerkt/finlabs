@@ -1,4 +1,3 @@
-import { useAuth } from '@/context/AuthContext';
 import { useProject } from '@/context/ProjectContext';
 import { isEmptyObj } from '@/helpers/isEmptyObj';
 import useDisclosure from '@/libs/useDisclosure';
@@ -12,7 +11,7 @@ import {
   ModalHeader,
 } from '@/shared/Modal';
 import { Form, Formik } from 'formik';
-import { FaPen } from 'react-icons/fa';
+import { FaCog } from 'react-icons/fa';
 
 const EditProjectModal = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -20,8 +19,8 @@ const EditProjectModal = () => {
 
   return (
     <>
-      <Button className='w-max' isRound onClick={onOpen}>
-        <FaPen />
+      <Button className='w-max' variant='outline' isRound onClick={onOpen}>
+        <FaCog />
       </Button>
       <Modal isOpen={isOpen}>
         <ModalContent>
