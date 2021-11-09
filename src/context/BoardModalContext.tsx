@@ -73,18 +73,15 @@ function BoardModalProvider({ children }: { children: React.ReactNode }) {
                   ? {
                       title: '',
                       description: '',
-                      columnId: column,
                     }
-                  : { ...boardToEdit, columnId: column }
+                  : { ...boardToEdit }
               }
               onSubmit={async (values) => {
-                console.log(values);
-                const { columnId, ...board } = values;
                 try {
                   if (!boardToEdit) {
-                    await addBoard(board, columnId);
+                    await addBoard(values, column);
                   } else {
-                    await editBoard(board as IBoard, columnId);
+                    await editBoard(values as IBoard, column);
                   }
                   onClose();
                 } catch (err) {
@@ -96,7 +93,7 @@ function BoardModalProvider({ children }: { children: React.ReactNode }) {
                 <Form id='board-form'>
                   <InputField label='title' name='title' />
                   <TextAreaField label='description' name='description' />
-                  <SelectField label='column' name='columnId'>
+                  {/* <SelectField label='column' name='columnId'>
                     {project.columns.map((col) => (
                       <option
                         key={`${col._id}_${boardToEdit ? 'edit' : 'add'}`}
@@ -105,7 +102,7 @@ function BoardModalProvider({ children }: { children: React.ReactNode }) {
                         {col.title}
                       </option>
                     ))}
-                  </SelectField>
+                  </SelectField> */}
 
                   <ModalFooter isClosable onClose={onClose}>
                     <Button
