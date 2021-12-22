@@ -1,4 +1,3 @@
-import { Column } from '@/models/Column';
 import { Project } from '@/models/Project';
 import { User } from '@/models/User';
 import mongoose, {
@@ -7,7 +6,6 @@ import mongoose, {
   Schema,
   Document,
   Model,
-  ObjectId,
 } from 'mongoose';
 
 export enum LabelsEnum {

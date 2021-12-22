@@ -1,6 +1,7 @@
 import { Document, Model, model, models, PopulatedDoc, Schema } from 'mongoose';
-import { Column } from '@/models/Column';
+import ColumnModel, { Column } from '@/models/Column';
 import { User } from './User';
+import BoardModel from '@/models/Board';
 
 export interface IProject {
   _id: string;
@@ -27,6 +28,12 @@ const ProjectSchema = new Schema<Project>(
   },
   { timestamps: true }
 );
+
+ProjectSchema.pre('deleteOne', async function (next) {
+  await BoardModel.deleteMany({projectId: this._id});
+  await ColumnModel.deleteMany({projectId: this._id});
+  return next();
+})
 
 const ProjectModel =
   (models?.Project as Model<Project>) ||
