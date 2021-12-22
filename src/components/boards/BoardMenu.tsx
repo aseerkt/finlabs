@@ -1,10 +1,8 @@
-import { useRouter } from 'next/router';
 import { FaEllipsisH } from 'react-icons/fa';
 import { useBoardModal } from '@/context/BoardModalContext';
 import { useProject } from '@/context/ProjectContext';
 import useDisclosure from '@/libs/useDisclosure';
 import { IBoard } from '@/models/Board';
-import { IColumn } from '@/models/Column';
 import { Menu, MenuItem, MenuList } from '@/shared/menu';
 import { useAuth } from '@/context/AuthContext';
 

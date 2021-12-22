@@ -30,10 +30,10 @@ const ProjectSchema = new Schema<Project>(
 );
 
 ProjectSchema.pre('deleteOne', async function (next) {
-  await BoardModel.deleteMany({projectId: this._id});
-  await ColumnModel.deleteMany({projectId: this._id});
+  await BoardModel.deleteMany({ projectId: this._id });
+  await ColumnModel.deleteMany({ projectId: this._id });
   return next();
-})
+});
 
 const ProjectModel =
   (models?.Project as Model<Project>) ||

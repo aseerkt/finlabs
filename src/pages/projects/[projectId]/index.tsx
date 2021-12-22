@@ -1,8 +1,7 @@
 import axios from 'axios';
 import Head from 'next/head';
 import { GetServerSideProps, NextPage } from 'next';
-import { Project } from '@/models/Project';
-import ColumnBoards from '@/components/columns/ColumnBoards';
+import Columns from '@/components/columns/Columns';
 import BoardModalProvider from '@/context/BoardModalContext';
 import ProjectProvider, { ProjectState } from '@/context/ProjectContext';
 import ProjectInfo from '@/components/ProjectInfo';
@@ -20,7 +19,7 @@ const ProjectPage: NextPage<{ project: ProjectState }> = ({ project }) => {
       <ProjectInfo />
       {/* Boards */}
       <BoardModalProvider>
-        <ColumnBoards />
+        <Columns />
       </BoardModalProvider>
     </ProjectProvider>
   );
