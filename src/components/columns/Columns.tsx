@@ -1,4 +1,3 @@
-import { useBoardModal } from '@/context/BoardModalContext';
 import { useProject } from '@/context/ProjectContext';
 import { DragDropContext } from 'react-beautiful-dnd';
 import Column from '@/components/columns/Column';
