@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import cloneDeep from 'lodash/cloneDeep';
-import { createContext, memo, useCallback, useContext, useState } from 'react';
+import { createContext, memo, useContext, useState } from 'react';
 import { z } from 'zod';
 
 interface FormContextValue<T extends z.ZodTypeAny> {
@@ -67,19 +67,16 @@ function Form<T extends z.ZodTypeAny>({
     return validatedFields.success;
   };
 
-  const handleSubmit = useCallback(
-    async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      setPending(true);
-      const isFormValid = validateFields();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPending(true);
+    const isFormValid = validateFields();
 
-      if (isFormValid) {
-        await onSubmit(formValues);
-      }
-      setPending(false);
-    },
-    []
-  );
+    if (isFormValid) {
+      await onSubmit(formValues);
+    }
+    setPending(false);
+  };
 
   const handleChange = (
     event: React.ChangeEvent<

@@ -1,2 +1,4 @@
 /**  @type {import('eslint').Linter.Config}  */
-module.exports = {};
+module.exports = {
+  extends: 'next/core-web-vitals',
+};

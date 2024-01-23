@@ -19,7 +19,7 @@ export default function SignUpPage() {
     <div>
       <CardHeader className='text-center'>
         <CardTitle className='text-xl'>Welcome to Finlabs</CardTitle>
-        <CardDescription>Let's begin the adventure</CardDescription>
+        <CardDescription>Let&apos;s begin the adventure</CardDescription>
       </CardHeader>
       <CardContent>
         <SignUpForm />
