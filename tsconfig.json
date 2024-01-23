@@ -3,36 +3,12 @@
     "target": "es5",
     "baseUrl": "./src",
     "paths": {
-      "@/components/*": [
-        "components/*"
-      ],
-      "@/context/*": [
-        "context/*"
-      ],
-      "@/helpers/*": [
-        "helpers/*"
-      ],
-      "@/libs/*": [
-        "libs/*"
-      ],
-      "@/models/*": [
-        "models/*"
-      ],
-      "@/styles/*": [
-        "styles/*"
-      ],
-      "@/shared/*": [
-        "shared/*"
-      ]
+      "@/*": ["./*"]
     },
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -43,17 +19,20 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "exclude": [
-    "node_modules",
-    ".next",
-    "out"
-  ],
+  "exclude": ["node_modules", ".next", "out"],
   "include": [
     "next-env.d.ts",
+    "vendor.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js"
+    "**/*.js",
+    ".next/types/**/*.ts"
   ]
 }
