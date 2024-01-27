@@ -11,7 +11,22 @@ export default async function createUser(values: z.infer<typeof signUpSchema>) {
 
   if (!validatedFields.success) {
     return {
+      message: 'Invalid form data',
       errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const existingUserCount = await prisma.user.count({
+    where: { OR: [{ email: values.email }, { username: values.username }] },
+  });
+
+  if (existingUserCount !== 0) {
+    return {
+      message: 'Email/Username already taken',
+      errors: {
+        email: ['Email already taken'],
+        username: ['Username already taken'],
+      },
     };
   }
 

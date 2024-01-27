@@ -1,7 +1,7 @@
 import { Input, InputProps } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useFormControl } from '@/contexts/FormContext';
 import * as React from 'react';
-import { useFormControl } from './Form';
 
 interface InputFieldProps extends InputProps {
   label?: React.ReactNode;
@@ -21,8 +21,15 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
       }
     };
 
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      onBlur(e);
+      if (props.onBlur) {
+        props.onBlur(e);
+      }
+    };
+
     return (
-      <div className='mb-8'>
+      <div className='h-24'>
         {props.label && <Label htmlFor={props.name}>{props.label}</Label>}
         <Input
           ref={ref}
@@ -30,7 +37,7 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
           {...props}
           value={value as string}
           onChange={handleChange}
-          onBlur={onBlur}
+          onBlur={handleBlur}
         />
         {invalid && (
           <div role='alert' className='text-red-600 text-xs mt-2'>

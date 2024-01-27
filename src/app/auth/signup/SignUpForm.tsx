@@ -3,24 +3,28 @@
 import { signUpSchema } from '@/app/auth/signup/schema';
 import { Form, InputField, SubmitButton } from '@/components/form';
 import { toast } from '@/components/ui/use-toast';
+import useGuestRedirect from '@/lib/hooks/useGuestRedirect';
 import { z } from 'zod';
 import createUser from './action';
 
 export default function SignUpForm() {
+  useGuestRedirect();
+
   const handleSignUpAction = async (values: z.infer<typeof signUpSchema>) => {
     try {
       const result = await createUser(values);
       if (result.errors) {
-        Object.keys(result.errors);
         toast({
-          title: 'Invalid form data',
+          title: result.message,
           description: 'Please check your inputs',
+          variant: 'destructive',
         });
       }
     } catch (error) {
       toast({
         title: 'Something went wrong',
         description: (error as Error).message,
+        variant: 'destructive',
       });
     }
   };

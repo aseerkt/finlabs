@@ -1,12 +1,16 @@
-import prisma from '@/lib/prisma';
 import bcrypt from 'bcrypt';
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions, getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import prisma from './prisma';
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt',
+  },
   pages: {
     signIn: '/auth/login',
+    error: '/auth/login',
   },
   providers: [
     CredentialsProvider({
@@ -19,9 +23,9 @@ const authOptions: NextAuthOptions = {
         };
 
         const user = await prisma.user.findFirst({
-          where: {
-            OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
-          },
+          where: usernameOrEmail.includes('@')
+            ? { email: usernameOrEmail }
+            : { username: usernameOrEmail },
         });
 
         if (!user) {
@@ -38,10 +42,23 @@ const authOptions: NextAuthOptions = {
           id: user.id,
           username: user.username,
           email: user.email,
+          name: user.name,
         };
       },
     }),
   ],
+  callbacks: {
+    jwt({ token, user }) {
+      token.id = token.id ?? user?.id;
+      token.username = token.username ?? user?.username;
+      return token;
+    },
+    session({ token, session }) {
+      session.user.id = token.id;
+      session.user.username = token.username;
+      return session;
+    },
+  },
 };
 
-export default NextAuth(authOptions);
+export const getAuthSesssion = () => getServerSession(authOptions);

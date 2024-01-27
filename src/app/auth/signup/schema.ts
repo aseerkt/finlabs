@@ -1,16 +1,15 @@
+import { zRequiredString } from '@/lib/zodUtils';
 import { z } from 'zod';
 
 export const signUpSchema = z
   .object({
-    name: z.string({ required_error: 'Name is required' }),
-    username: z.string({ required_error: 'Username is required' }),
-    email: z
-      .string({ required_error: 'Email is required' })
-      .email({ message: 'Invalid email address' }),
-    password: z.string({ required_error: 'Password is required' }),
-    confirmPassword: z.string({
-      required_error: 'Confirm password is required',
+    name: zRequiredString('Name is required'),
+    username: zRequiredString('Username is required'),
+    email: zRequiredString('Email is required').email({
+      message: 'Invalid email address',
     }),
+    password: zRequiredString('Password is required'),
+    confirmPassword: zRequiredString('Confirm password is required'),
   })
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (confirmPassword !== password) {
