@@ -3,7 +3,6 @@ module.exports = {
   darkMode: ['class'],
   content: ['./src/**/*.{ts,tsx}'],
   prefix: '',
-
   theme: {
     extend: {
       fontFamily: { poppins: ['var(--font-poppins'] },
