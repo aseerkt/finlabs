@@ -1,9 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { fetchUserByUsername } from '@/lib/daos/users';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
-type UserPageProps = {
+export type UserPageProps = {
   params: { username: string };
 };
 
@@ -15,44 +14,24 @@ export async function generateMetadata({
 
   const user = await fetchUserByUsername(username);
 
-  if (!user) {
-    return notFound();
-  }
-
   return {
-    title: `${user?.username} (${user?.name})`,
+    title: {
+      default: `${user.username} (${user.name})`,
+      template: `%s - ${user.username} (${user.name}) | Finlabs`,
+    },
   };
 }
 
 export default async function UserPage({ params }: UserPageProps) {
-  const user = await fetchUserByUsername(params.username);
-
-  if (!user) {
-    notFound();
-    return null;
-  }
+  const user = await fetchUserByUsername(params.username, true);
 
   return (
     <Card className='grow'>
       <CardHeader>
-        <CardTitle className='text-4xl'>Welcome {user?.name}</CardTitle>
+        <CardTitle className='text-4xl'>Hi, I am {user.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <h2 className='font-bold text-xl'>Features Roadmap</h2>
-        <ul>
-          <li>create project</li>
-          <li>list projects</li>
-          <li>create columns - kanban</li>
-          <li>create tasks</li>
-          <li>drag n drop tasks</li>
-          <li>invite collaborators</li>
-          <li>assign tasks</li>
-          <li>change project visibility - private / public</li>
-          <li>delete project</li>
-          <li>star project</li>
-          <li>follow unfollow peoples</li>
-          <li>user feeds</li>
-        </ul>
+        <h2 className='font-bold text-xl'>User Feeds</h2>
       </CardContent>
     </Card>
   );

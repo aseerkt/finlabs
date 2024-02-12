@@ -1,18 +1,23 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { User } from '@prisma/client';
-import { LinkIcon, MapPinIcon } from 'lucide-react';
+import { LinkIcon, MapPinIcon, UsersIcon } from 'lucide-react';
 import Image from 'next/image';
-import UserActions from './UserActions';
+import Link from 'next/link';
+import UserProfileActions from './UserProfileActions';
 
 interface UserProfileSectionProps {
-  user: Omit<User, 'createdAt' | 'password' | 'updatedAt' | 'email'>;
-  isCurrentUser: boolean;
+  user: {
+    id: number;
+    username: string;
+    name: string;
+    website: string | null;
+    location: string | null;
+    followersCount: number;
+    followingsCount: number;
+    isFollowing: boolean;
+  };
 }
 
-export default function UserProfileSection({
-  user,
-  isCurrentUser = false,
-}: UserProfileSectionProps) {
+export default function UserProfileSection({ user }: UserProfileSectionProps) {
   return (
     <Card className='w-[296px] bg-transparent'>
       <CardContent className='pt-6'>
@@ -25,24 +30,51 @@ export default function UserProfileSection({
             className='w-20 h-20 md:w-[296px] md:h-[296px] shadow-md  object-cover object-center rounded-full'
           />
           <div>
-            <p className='text-3xl font-bold mb-2'>{user.name}</p>
-            <p className='text-xl mb-3'>{user.username}</p>
+            <p className='text-3xl font-bold mb-2'>{user?.name}</p>
+            <p className='text-xl mb-3'>{user?.username}</p>
           </div>
         </div>
-        <UserActions isCurrentUser={isCurrentUser} />
-        <div>
-          {user.website && (
-            <p>
-              <LinkIcon />{' '}
-              <a href={user.website} rel='noreferrer' target='_blank'>
+        <UserProfileActions user={user} />
+        <div className='flex my-3 items-center space-x-3'>
+          <UsersIcon className='-mr-1' size={16} />
+          <span className='flex items-center '>
+            <b className='font-semibold mr-1'>{user.followersCount}</b>
+            <Link
+              href={`/users/${user.username}/followers`}
+              className='text-sm text-gray-500'
+            >
+              followers
+            </Link>
+          </span>
+          <span className='font-bold'>·</span>
+          <span className='flex items-center '>
+            <b className='font-semibold mr-1'>{user.followingsCount}</b>
+            <Link
+              href={`/users/${user.username}/followings`}
+              className='text-sm text-gray-500'
+            >
+              followings
+            </Link>
+          </span>
+        </div>
+        <div className='space-y-3 text-sm'>
+          {user?.website && (
+            <div className='flex space-x-2 items-center'>
+              <LinkIcon size={16} />{' '}
+              <a
+                className='hover:underline'
+                href={user.website}
+                rel='noreferrer'
+                target='_blank'
+              >
                 {user.website}
               </a>
-            </p>
+            </div>
           )}
-          {user.location && (
-            <p>
-              <MapPinIcon /> <span>{user.location}</span>
-            </p>
+          {user?.location && (
+            <div className='flex space-x-2 items-center'>
+              <MapPinIcon size={16} /> <span>{user.location}</span>
+            </div>
           )}
         </div>
       </CardContent>

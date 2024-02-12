@@ -1,38 +1,49 @@
-'use server';
-import { getAuthSesssion } from '@/lib/authUtils';
+'use client';
 import { PlusCircleIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Button } from '../ui/button';
+import UserButton from './UserButton';
 
 type NavbarProps = {
-  title: string;
+  title: React.ReactNode;
 };
 
-const Navbar = async ({ title }: NavbarProps) => {
-  const session = await getAuthSesssion();
+export default function Navbar({ title }: NavbarProps) {
+  const session = useSession();
 
   return (
-    <div className='flex justify-between items-center px-6 py-3 h-20'>
+    <div className='flex justify-between items-center px-6 py-3 h-20 shadow-sm border-b bg-cyan-50'>
       <div className='flex gap-3 items-center'>
-        <Image src='/finlabs-logo.svg' alt='Finlabs' width={32} height={32} />
-        <h3 className='font-bold text-lg'>{title}</h3>
+        <Link aria-label='home-link' href='/'>
+          <Image src='/finlabs-logo.svg' alt='Finlabs' width={32} height={32} />
+        </Link>
+        <h3 className='font-semibold'>{title}</h3>
       </div>
       <div className='flex gap-3 items-center'>
-        {session?.user ? (
+        {session?.data?.user ? (
           <>
-            <Link aria-label='add project' href='/projects/new'>
+            <Link
+              aria-label='add project'
+              title='New project'
+              href='/projects/new'
+            >
               <PlusCircleIcon />
             </Link>
+            <UserButton user={session.data.user} />
           </>
         ) : (
           <>
-            <Link href='/auth/login'>Login</Link>
-            <Link href='/auth/signup'>Sign Up</Link>
+            <Button asChild>
+              <Link href='/auth/login'>Login</Link>
+            </Button>
+            <Button variant='outline'>
+              <Link href='/auth/signup'>Sign Up</Link>
+            </Button>
           </>
         )}
       </div>
     </div>
   );
-};
-
-export default Navbar;
+}

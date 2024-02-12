@@ -1,25 +1,46 @@
 'use client';
 
-import { Form, InputField, SubmitButton } from '@/components/form';
+import { InputField } from '@/components/form';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
+import { resetCache } from '@/lib/actionUtils';
 import useGuestRedirect from '@/lib/hooks/useGuestRedirect';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { loginSchema } from './schema';
 
 export default function LoginForm() {
   useGuestRedirect();
 
-  const handleSubmit = async (values: z.infer<typeof loginSchema>) => {
+  const form = useForm({
+    defaultValues: {
+      usernameOrEmail: '',
+      password: '',
+    },
+    resolver: zodResolver(loginSchema),
+  });
+
+  const {
+    handleSubmit,
+    control,
+    formState: { isSubmitting },
+  } = form;
+
+  const onSubmit = handleSubmit(async (values: z.infer<typeof loginSchema>) => {
     try {
       const result = await signIn('credentials', {
         ...values,
         redirect: false,
       });
       if (result?.ok) {
+        resetCache();
         toast({
           title: 'Welcome to Finlabs',
-          description: 'Glad to have you back',
+          description: 'Glad to have you here',
+          variant: 'success',
         });
       } else if (result?.error) {
         toast({
@@ -34,26 +55,28 @@ export default function LoginForm() {
         description: 'Please try again after some time',
       });
     }
-  };
+  });
 
   return (
-    <Form
-      initialValues={{ usernameOrEmail: '', password: '' }}
-      onSubmit={handleSubmit}
-      schema={loginSchema}
-    >
-      <InputField
-        label='Username or Email'
-        type='text'
-        name='usernameOrEmail'
-      />
-      <InputField
-        label='Password'
-        type='password'
-        name='password'
-        autoComplete='password'
-      />
-      <SubmitButton>Sign in</SubmitButton>
+    <Form {...form}>
+      <form onSubmit={onSubmit}>
+        <InputField
+          label='Username or Email'
+          type='text'
+          name='usernameOrEmail'
+          control={control}
+        />
+        <InputField
+          label='Password'
+          type='password'
+          name='password'
+          autoComplete='password'
+          control={control}
+        />
+        <Button type='submit' disabled={isSubmitting}>
+          Sign in
+        </Button>
+      </form>
     </Form>
   );
 }

@@ -6,21 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  // directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 // ENUMS
-enum ProjectVisibility {
-  PUBLIC
-  PRIVATE
-}
-
-enum ProjectStatus {
-  OPEN
-  CLOSED
-}
 
 enum ColumnColor {
   GRAY
@@ -37,6 +28,12 @@ enum TaskPriority {
   HIGH
   MEDIUM
   LOW
+}
+
+enum CollaboratorRole {
+  ADMIN
+  WRITE
+  READ
 }
 
 // MODELS
@@ -64,12 +61,12 @@ model User {
 }
 
 model Project {
-  id          Int               @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   name        String
   description String?
-  visibility  ProjectVisibility @default(PUBLIC)
-  status      ProjectStatus     @default(OPEN)
-  author      User              @relation(fields: [authorId], references: [id])
+  isPublic    Boolean @default(true)
+  isActive    Boolean @default(true)
+  author      User    @relation(fields: [authorId], references: [id])
   authorId    Int
 
   collaborators Collaborator[]
@@ -78,7 +75,7 @@ model Project {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([authorId, name])
+  @@unique([authorId, name])
   @@map("projects")
 }
 
@@ -86,8 +83,9 @@ model Collaborator {
   projectId Int
   userId    Int
 
-  project Project @relation(fields: [projectId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
+  project Project          @relation(fields: [projectId], references: [id])
+  user    User             @relation(fields: [userId], references: [id])
+  role    CollaboratorRole @default(WRITE)
 
   @@id([projectId, userId])
   @@map("collaborators")
@@ -100,8 +98,9 @@ model Column {
   color       ColumnColor @default(GRAY)
   description String?
   hidden      Boolean     @default(false)
+  position    Int
 
-  project Project @relation(fields: [projectId], references: [id])
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   tasks   Task[]
 
   createdAt DateTime @default(now())
@@ -114,11 +113,13 @@ model Task {
   id          Int          @id @default(autoincrement())
   title       String
   description String?
-  assigneeId  Int
+  assigneeId  Int?
   columnId    Int
   priority    TaskPriority @default(LOW)
+  isActive    Boolean      @default(true)
+  position    Int
 
-  column   Column @relation(fields: [columnId], references: [id])
+  column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
   assignee User?  @relation(fields: [assigneeId], references: [id])
 
   @@map("tasks")

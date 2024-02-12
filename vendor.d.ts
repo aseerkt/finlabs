@@ -10,6 +10,8 @@ declare global {
 
     interface ProcessEnv {
       NEXTAUTH_SECRET: string;
+      NEXTAUTH_URL: string;
+      POSTGRES_PRISMA_URL: string;
     }
   }
 }
@@ -19,6 +21,7 @@ declare module 'next-auth' {
     id: number;
     username: string;
     email: string;
+    name: string;
   }
 
   interface Session {
@@ -26,6 +29,7 @@ declare module 'next-auth' {
       id: number;
       username: string;
       email: string;
+      name: string;
     } & DefaultSession['user'];
   }
 }
@@ -35,5 +39,6 @@ declare module 'next-auth/jwt' {
     id: number;
     username: string;
     email: string;
+    name: string;
   }
 }

@@ -1,53 +1,46 @@
 import { Input, InputProps } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useFormControl } from '@/contexts/FormContext';
 import * as React from 'react';
+import { Control } from 'react-hook-form';
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
 
-interface InputFieldProps extends InputProps {
-  label?: React.ReactNode;
+type InputFieldProps = InputProps & {
   name: string;
-}
+  control: Control<any>;
+  label?: React.ReactNode;
+  helperText?: React.ReactNode;
+};
 
-const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
-  (props, ref) => {
-    const { value, invalid, error, onChange, onBlur } = useFormControl({
-      name: props.name,
-    });
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(e);
-      if (props.onChange) {
-        props.onChange(e);
-      }
-    };
-
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      onBlur(e);
-      if (props.onBlur) {
-        props.onBlur(e);
-      }
-    };
-
-    return (
-      <div className='h-24'>
-        {props.label && <Label htmlFor={props.name}>{props.label}</Label>}
-        <Input
-          ref={ref}
-          id={props.name}
-          {...props}
-          value={value as string}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-        {invalid && (
-          <div role='alert' className='text-red-600 text-xs mt-2'>
-            {error}
-          </div>
-        )}
-      </div>
-    );
-  }
-);
+const InputField = ({
+  name,
+  control,
+  label,
+  helperText,
+  ...props
+}: InputFieldProps) => {
+  return (
+    <FormField
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <FormItem className='pb-5'>
+          {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
+          <FormControl>
+            <Input id={name} {...props} {...field} />
+          </FormControl>
+          {helperText && <FormDescription>{helperText}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    ></FormField>
+  );
+};
 
 InputField.displayName = 'InputField';
 

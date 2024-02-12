@@ -48,14 +48,24 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       token.id = token.id ?? user?.id;
       token.username = token.username ?? user?.username;
+
+      if (trigger === 'update' && session?.name) {
+        token.name = session.name;
+      }
+
       return token;
     },
-    session({ token, session }) {
+    session({ token, session, trigger, newSession }) {
       session.user.id = token.id;
       session.user.username = token.username;
+
+      if (trigger === 'update' && newSession?.name) {
+        session.user.name = newSession.name;
+      }
+
       return session;
     },
   },
