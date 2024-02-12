@@ -1,24 +1,40 @@
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
-import { Poppins } from 'next/font/google';
+import SessionProvider from '@/providers/SessionProvider';
+import { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 import './globals.css';
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-poppins',
-  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
 });
 
 export const fonts = {
-  poppins,
+  inter,
 };
 
-export default function RootLayout({ children }: PropsWithChildren<{}>) {
+export const metadata: Metadata = {
+  title: {
+    default: 'Finlabs',
+    template: '%s | Finlabs',
+  },
+  description: 'Finlabs is where share, contribute projects and manage tasks',
+};
+
+export default async function RootLayout({ children }: PropsWithChildren<{}>) {
+  const session = await getServerSession();
   return (
-    <html>
-      <body className={cn('bg-gray-200', fonts.poppins.className)}>
-        {children}
+    <html lang='en'>
+      <body
+        className={cn(
+          'min-h-screen font-sans bg-slate-100 antialiased',
+          fonts.inter.className
+        )}
+      >
+        <SessionProvider session={session}>{children}</SessionProvider>
         <Toaster />
       </body>
     </html>

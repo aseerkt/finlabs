@@ -1,17 +1,49 @@
+import ProjectCard from '@/components/ProjectCard';
+import { Navbar } from '@/components/navbar';
+import { getAuthSesssion } from '@/lib/authUtils';
 import prisma from '@/lib/prisma';
 
 export default async function ProjectsPage() {
+  const session = await getAuthSesssion();
   const projects = await prisma.project.findMany({
-    where: { visibility: 'PUBLIC' },
+    where: {
+      OR: [
+        { isPublic: true },
+        session?.user
+          ? {
+              isPublic: false,
+              OR: [
+                { authorId: session?.user.id },
+                { collaborators: { some: { userId: session?.user.id } } },
+              ],
+            }
+          : {},
+      ],
+    },
+    select: {
+      id: true,
+      isPublic: true,
+      name: true,
+      description: true,
+      createdAt: true,
+      updatedAt: true,
+      author: {
+        select: {
+          username: true,
+          name: true,
+        },
+      },
+    },
   });
 
   return (
-    <div>
-      {projects.map((project) => (
-        <article key={project.id}>
-          <h1>{project.name}</h1>
-        </article>
-      ))}
+    <div className='flex flex-col'>
+      <Navbar title='Projects' />
+      <ul className=' max-w-screen-md w-full mx-auto mt-3 p-3 grow flex flex-col gap-3'>
+        {projects.map((project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
+      </ul>
     </div>
   );
 }
