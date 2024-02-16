@@ -1,6 +1,5 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
 import { addPrefix, stripPrefix } from '@/lib/utils';
 import {
@@ -22,10 +21,9 @@ import {
 } from '@dnd-kit/sortable';
 import { debounce } from 'lodash';
 import { RefObject, useEffect, useId, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useImmer } from 'use-immer';
 import AddTask from '../AddTask';
-import { ShowIfHasAccessFor, useProjectAccess } from '../ProjectContext';
+import { useProjectAccess } from '../ProjectContext';
 import { BoardData } from '../types';
 import ColumnCard from './ColumnCard';
 import ColumnSortable from './ColumnSortable';
@@ -212,7 +210,7 @@ export default function KanbanBoard({
     ref: RefObject<HTMLDivElement>
   ) => setSelectedColumn({ id: columnId, ref });
 
-  const handleClickAway = () => setSelectedColumn(undefined);
+  const unselectColumn = () => setSelectedColumn(undefined);
 
   const scrollToBottomOfColumn = () => {
     if (
@@ -225,8 +223,8 @@ export default function KanbanBoard({
         top: selectedColumn.ref.current.scrollHeight,
         behavior: 'smooth',
       });
-      handleClickAway();
     }
+    unselectColumn();
   };
 
   return (
@@ -300,20 +298,13 @@ export default function KanbanBoard({
         </PortalDragOverlay>
       </DndContext>
 
-      {selectedColumn?.id && (
-        <ShowIfHasAccessFor role='WRITE'>
-          {createPortal(
-            <Card
-              onBlur={handleClickAway}
-              className='fixed bottom-3 inset-x-3 p-3 shadow-md border-2 bg-white flex items-center'
-            >
-              <CardContent className='grow p-0 -mb-5'>
-                <AddTask columnId={selectedColumn.id} />
-              </CardContent>
-            </Card>,
-            document.body
-          )}
-        </ShowIfHasAccessFor>
+      {hasAccess && (
+        <AddTask
+          key={selectedColumn?.id}
+          projectId={projectId}
+          columnId={selectedColumn?.id}
+          onClose={scrollToBottomOfColumn}
+        />
       )}
     </div>
   );

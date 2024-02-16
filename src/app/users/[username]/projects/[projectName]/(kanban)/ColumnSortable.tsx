@@ -44,7 +44,6 @@ export default function ColumnSortable({
       ref={setNodeRef}
       className={cn('relative', isDragging && 'opacity-50')}
       style={styles}
-      {...attributes}
     >
       {children}
       {!disabled && (
@@ -52,9 +51,10 @@ export default function ColumnSortable({
           className='absolute top-3 right-3'
           size='icon'
           variant='ghost'
-          aria-label='sort column button'
+          aria-label='column drag handle'
           ref={setActivatorNodeRef}
           {...listeners}
+          {...attributes}
         >
           <GripVerticalIcon />
         </Button>

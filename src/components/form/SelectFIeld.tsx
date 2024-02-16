@@ -22,7 +22,7 @@ interface SelectFieldProps<Option> extends SelectProps {
   control: Control<any>;
   options: Option[];
   getOptionValue: (option: Option) => string;
-  getOptionLabel: (option: Option) => string;
+  getOptionLabel: (option: Option) => React.ReactNode;
   getCurrentOptionDisplay: (
     option?: Option,
     placeholder?: React.ReactNode
@@ -55,7 +55,7 @@ export default function SelectField<Option>({
           (option) => getOptionValue(option) === field.value
         );
         return (
-          <FormItem>
+          <FormItem className='pb-5'>
             {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
             <Select defaultValue={field.value} onValueChange={field.onChange}>
               <FormControl>
