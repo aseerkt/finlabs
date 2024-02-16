@@ -12,6 +12,7 @@ import { toast } from '@/components/ui/use-toast';
 import { cn, fetcher } from '@/lib/utils';
 import { Prisma, TaskPriority } from '@prisma/client';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import MDEditor from '@uiw/react-md-editor';
 import { capitalize } from 'lodash';
 import { useState } from 'react';
 import useSWR from 'swr';
@@ -99,7 +100,7 @@ export default function TaskDisplay({ taskId }: TaskDisplayProps) {
               </DialogTitle>
             )}
           </DialogHeader>
-          <div className='p-6 border-t-2 min-h-[400px] grid grid-cols-[auto_250px]'>
+          <div className='p-6 grow border-t-2 grid grid-cols-[auto_250px]'>
             <section className='pr-6 flex flex-col gap-2'>
               <h4 className='font-semibold'>Short Description</h4>
               {editMode === 'DESCRIPTION' ? (
@@ -110,13 +111,18 @@ export default function TaskDisplay({ taskId }: TaskDisplayProps) {
                 />
               ) : (
                 <div className=' flex flex-col justify-start grow'>
-                  <p className='grow'>
-                    {task.description ?? (
+                  <div className='grow'>
+                    {task.description ? (
+                      <MDEditor.Markdown
+                        source={task.description}
+                        wrapperElement={{ 'data-color-mode': 'light' }}
+                      />
+                    ) : (
                       <span className='text-gray-500'>
                         No description provided
                       </span>
                     )}
-                  </p>
+                  </div>
                   <Button
                     size='sm'
                     variant='link'

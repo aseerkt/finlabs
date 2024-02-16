@@ -30,6 +30,8 @@
     --ring: 224 71.4% 4.1%;
 
     --radius: 0.5rem;
+
+    --md-editor-font-family: var(--font-inter);
   }
 
   .dark {
@@ -70,4 +72,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.wmde-markdown,
+.w-md-editor-text-pre,
+.w-md-editor-text-input,
+.w-md-editor-text {
+  font-family: var(--font-inter) !important;
 }

@@ -1,7 +1,7 @@
 import ProjectCard from '@/components/ProjectCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { fetchProjectsForUser } from '@/lib/daos/projects';
-import EmptyProjectsPlaceHolder from './EmptyProjectsPlaceholder';
+import EmptyProjectsPlaceHolder from './[projectName]/EmptyProjectsPlaceholder';
 
 type UserProjectsPageProps = {
   params: { username: string };

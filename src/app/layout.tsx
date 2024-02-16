@@ -12,10 +12,6 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-export const fonts = {
-  inter,
-};
-
 export const metadata: Metadata = {
   title: {
     default: 'Finlabs',
@@ -31,7 +27,7 @@ export default async function RootLayout({ children }: PropsWithChildren<{}>) {
       <body
         className={cn(
           'min-h-screen font-sans bg-slate-100 antialiased',
-          fonts.inter.className
+          inter.className
         )}
       >
         <SessionProvider session={session}>{children}</SessionProvider>

@@ -1,4 +1,4 @@
-import { TextAreaField } from '@/components/form';
+import { MdEditorField } from '@/components/form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
@@ -18,13 +18,7 @@ export default function EditTaskDescription({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onEditSubmit)}>
-        <TextAreaField
-          name='description'
-          control={form.control}
-          placeholder='Enter short description here...'
-          rows={10}
-          autoFocus
-        />
+        <MdEditorField name='description' control={form.control} autoFocus />
         <div className='flex justify-end gap-2'>
           <Button variant='outline' type='button' onClick={onCancelEdit}>
             Cancel
