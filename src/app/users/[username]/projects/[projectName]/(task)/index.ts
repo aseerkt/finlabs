@@ -1,1 +1,1 @@
-export { default as TaskHandler } from './TaskModal';
+export { default as TaskModal } from './TaskModal';

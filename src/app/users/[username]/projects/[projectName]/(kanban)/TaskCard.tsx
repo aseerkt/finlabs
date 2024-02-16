@@ -24,7 +24,6 @@ export default function TaskCard({ task, isOverlay = false }: TaskCardProps) {
     const params = new URLSearchParams(searchParams.toString());
     params.set(TASK_ID_SEARCH_PARAM_KEY, String(task.id));
 
-    console.log(params.toString());
     router.replace(`${pathname}?${params.toString()}`);
   };
 

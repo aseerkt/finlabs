@@ -5,7 +5,7 @@ import { SettingsIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { KanbanBoard } from './(kanban)';
-import TaskModal from './(task)/TaskModal';
+import { TaskModal } from './(task)';
 import { ShowIfHasAccessFor } from './ProjectContext';
 import { getBoardDataFromColumns } from './serverUtils';
 import { ProjectPageParams } from './types';

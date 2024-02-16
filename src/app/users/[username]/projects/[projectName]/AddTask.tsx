@@ -1,4 +1,4 @@
-import { InputField, SelectField, TextAreaField } from '@/components/form';
+import { InputField, MdEditorField, SelectField } from '@/components/form';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -76,13 +76,13 @@ export default function AddTask({
               label='Priority'
               options={priorityOptions}
               optionKey='value'
-              getOptionLabel={(option) => <PriorityOption {...option} />}
+              getOptionLabel={PriorityOption}
               getOptionValue={(option) => option.value}
               getCurrentOptionDisplay={(option) =>
                 option?.label && <PriorityOption {...option} />
               }
             />
-            <TextAreaField
+            <MdEditorField
               name='description'
               control={form.control}
               label='Short description'
