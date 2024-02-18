@@ -9,7 +9,11 @@ import TaskSkeleton from './TaskSkeleton';
 
 const TaskDisplay = dynamic(() => import('./TaskDisplay'));
 
-export default function TaskModal() {
+interface TaskModalProps {
+  projectId: number;
+}
+
+export default function TaskModal({ projectId }: TaskModalProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -25,7 +29,7 @@ export default function TaskModal() {
     <Dialog open={Boolean(taskId)} onOpenChange={handleClose}>
       <DialogContent className='p-0 max-w-[900px] flex flex-col gap-0 min-h-[550px] w-full'>
         <Suspense fallback={<TaskSkeleton />}>
-          {taskId && <TaskDisplay taskId={taskId} />}
+          {taskId && <TaskDisplay projectId={projectId} taskId={taskId} />}
         </Suspense>
       </DialogContent>
     </Dialog>

@@ -22,7 +22,7 @@ import {
 import { debounce } from 'lodash';
 import { RefObject, useEffect, useId, useState } from 'react';
 import { useImmer } from 'use-immer';
-import AddTask from '../AddTask';
+import { AddTask } from '../(task)';
 import { useProjectAccess } from '../ProjectContext';
 import { BoardData } from '../types';
 import ColumnCard from './ColumnCard';

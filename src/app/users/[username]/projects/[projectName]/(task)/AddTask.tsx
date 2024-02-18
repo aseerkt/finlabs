@@ -1,3 +1,5 @@
+'use client';
+
 import { InputField, MdEditorField, SelectField } from '@/components/form';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,9 +17,10 @@ import { TaskPriority } from '@prisma/client';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { PlusCircleIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { priorityOptions, taskPriorityBgColors } from '../constants';
+import { AddTaskSchema, addTaskSchema } from '../schemas';
+import { AssigneeAutocomplete } from './AssigneeAutocomplete';
 import { createTask } from './actions';
-import { priorityOptions, taskPriorityBgColors } from './constants';
-import { addTaskSchema } from './schemas';
 
 interface AddTaskProps {
   projectId: number;
@@ -30,8 +33,12 @@ export default function AddTask({
   columnId,
   onClose,
 }: AddTaskProps) {
-  const form = useForm({
-    defaultValues: { title: '', priority: TaskPriority.LOW, description: '' },
+  const form = useForm<AddTaskSchema>({
+    defaultValues: {
+      title: '',
+      priority: TaskPriority.LOW,
+      description: '',
+    },
     disabled: !columnId,
     resolver: zodResolver(addTaskSchema),
   });
@@ -42,6 +49,7 @@ export default function AddTask({
         projectId,
         columnId: columnId!,
         ...values,
+        assigneeId: values.assignee?.id,
       });
       onClose();
     } catch (error) {
@@ -86,6 +94,12 @@ export default function AddTask({
               name='description'
               control={form.control}
               label='Short description'
+            />
+            <AssigneeAutocomplete
+              name='assignee'
+              control={form.control}
+              projectId={projectId}
+              label='Assignee'
             />
           </form>
           <DialogFooter className='justify-end'>

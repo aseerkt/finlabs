@@ -4,6 +4,10 @@ export interface EditTaskPayload {
   title?: string;
   description?: string;
   priority?: TaskPriority;
+  assignee?: {
+    id: number;
+    username: string;
+  } | null;
 }
 
 export interface EditTaskComponentProps {

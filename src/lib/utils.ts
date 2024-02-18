@@ -22,3 +22,22 @@ export function arrayMove(array: any[], from: number, to: number) {
   newArray.splice(to, 0, item);
   return newArray;
 }
+
+export function convertToGithubRepoName(name: string) {
+  // Convert to lowercase
+  let repoName = name.toLowerCase();
+
+  // Replace spaces with hyphens
+  repoName = repoName.replace(/\s+/g, '-');
+
+  // Remove special characters except hyphens
+  repoName = repoName.replace(/[^a-z0-9-]/g, '');
+
+  // Remove leading and trailing hyphens
+  repoName = repoName.replace(/^-+|-+$/g, '');
+
+  // GitHub repository names must be between 1 and 100 characters long
+  repoName = repoName.substring(0, 100);
+
+  return repoName;
+}

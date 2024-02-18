@@ -4,9 +4,14 @@ import { getAuthSesssion } from '@/lib/authUtils';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { CreateProjectValues } from './schema';
 
-export const createProject = async (values: CreateProjectValues) => {
+interface CreateProjectPayload {
+  name: string;
+  description: string;
+  isPublic: boolean;
+}
+
+export const createProject = async (values: CreateProjectPayload) => {
   const session = await getAuthSesssion();
   if (!session) {
     throw new Error('Not Authenticated');
@@ -17,6 +22,7 @@ export const createProject = async (values: CreateProjectValues) => {
       name: values.name,
       description: values.description,
       authorId: session?.user.id,
+      isPublic: values.isPublic,
       columns: {
         createMany: {
           data: [

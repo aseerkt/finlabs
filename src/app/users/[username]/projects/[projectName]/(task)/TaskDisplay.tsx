@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DialogHeader } from '@/components/ui/dialog';
+import { DialogDescription, DialogHeader } from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -8,16 +8,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@/components/ui/table';
 import { toast } from '@/components/ui/use-toast';
 import { cn, fetcher } from '@/lib/utils';
 import { Prisma, TaskPriority } from '@prisma/client';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import MDEditor from '@uiw/react-md-editor';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { capitalize } from 'lodash';
+import Link from 'next/link';
 import { useState } from 'react';
 import useSWR from 'swr';
-import { PriorityOption } from '../AddTask';
 import { priorityOptions } from '../constants';
+import { PriorityOption } from './AddTask';
+import EditTaskAssigneeForm from './EditTaskAssigneeForm';
 import EditTaskDescription from './EditTaskDescription';
 import EditTaskTitle from './EditTaskTitle';
 import TaskSkeleton from './TaskSkeleton';
@@ -25,22 +36,32 @@ import { editTask } from './actions';
 import { columnBadgeClassNames } from './constants';
 import { EditTaskPayload } from './types';
 
+dayjs.extend(relativeTime);
+
 interface TaskDisplayProps {
-  taskId?: string;
+  taskId: string;
+  projectId: number;
 }
 
-type EditMode = 'TITLE' | 'DESCRIPTION';
+type TaskType = Prisma.TaskGetPayload<{
+  include: {
+    assignee: { select: { id: true; username: true } };
+    reporter: { select: { id: true; username: true } };
+    column: { select: { id: true; label: true; color: true } };
+  };
+}>;
 
-export default function TaskDisplay({ taskId }: TaskDisplayProps) {
+type EditMode = 'TITLE' | 'DESCRIPTION' | 'ASSIGNEE';
+
+export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
   const {
     data: task,
     isLoading,
     mutate,
-  } = useSWR<
-    Prisma.TaskGetPayload<{
-      include: { column: { select: { id: true; label: true; color: true } } };
-    }>
-  >(`${window.location.origin}/api/tasks/${taskId}`, fetcher);
+  } = useSWR<TaskType>(
+    `${window.location.origin}/api/tasks/${taskId}`,
+    fetcher
+  );
 
   const [editMode, setEditMode] = useState<EditMode>();
 
@@ -86,7 +107,7 @@ export default function TaskDisplay({ taskId }: TaskDisplayProps) {
               <DialogTitle className='text-2xl font-bold flex justify-between'>
                 <div>
                   <span>{task?.title}</span>
-                  <span className='text-gray-500'>#{task.id}</span>
+                  <span className='text-gray-400'> #{task.id}</span>
                 </div>
                 <Button
                   aria-label='edit title button'
@@ -99,10 +120,23 @@ export default function TaskDisplay({ taskId }: TaskDisplayProps) {
                 </Button>
               </DialogTitle>
             )}
+            <DialogDescription className='text-gray-600'>
+              <b>
+                <Link
+                  className='hover:underline'
+                  href={`/users/${task.reporter.username}`}
+                >
+                  {task.reporter.username}
+                </Link>
+              </b>{' '}
+              created {dayjs(task.createdAt).fromNow()}
+            </DialogDescription>
           </DialogHeader>
-          <div className='p-6 grow border-t-2 grid grid-cols-[auto_250px]'>
+          <div className='p-6 grow border-t-2 grid grid-cols-[auto_380px]'>
             <section className='pr-6 flex flex-col gap-2'>
-              <h4 className='font-semibold'>Short Description</h4>
+              <h4 className='font-semibold border-b-2 mb-3'>
+                Short Description
+              </h4>
               {editMode === 'DESCRIPTION' ? (
                 <EditTaskDescription
                   description={task.description}
@@ -123,59 +157,80 @@ export default function TaskDisplay({ taskId }: TaskDisplayProps) {
                       </span>
                     )}
                   </div>
-                  <Button
-                    size='sm'
-                    variant='link'
-                    className='px-0 w-max'
-                    aria-label='edit description button'
-                    onClick={handleEditMode('DESCRIPTION')}
-                  >
-                    Edit description
-                  </Button>
+                  <div className='flex items-center space-x-3'>
+                    <Button
+                      size='sm'
+                      variant='link'
+                      className='px-0 w-max'
+                      aria-label='edit description button'
+                      onClick={handleEditMode('DESCRIPTION')}
+                    >
+                      Edit description
+                    </Button>
+                    <span className='text-sm text-gray-500'>
+                      updated {dayjs(task.updatedAt).fromNow()}
+                    </span>
+                  </div>
                 </div>
               )}
               <small></small>
             </section>
-            <section className='border-l pl-6 flex flex-col gap-4'>
-              <div className='flex items-center justify-between gap-2'>
-                <b>Priority</b>
-                <div>
-                  <Select
-                    value={task.priority}
-                    onValueChange={(value) =>
-                      handleTaskEdit({ priority: value as TaskPriority })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue>
-                        <PriorityOption
-                          label={capitalize(task.priority)}
-                          value={task.priority}
-                        />
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent position='popper'>
-                      {priorityOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          <PriorityOption {...option} />
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className='flex items-center justify-between gap-2'>
-                <b>Status</b>
-                <Badge
-                  variant='outline'
-                  className={cn(
-                    `rounded-full text-sm`,
-                    columnBadgeClassNames[task.column.color]
-                  )}
-                >
-                  {task.column.label}
-                </Badge>
-              </div>
+            <section className='flex flex-col'>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableHead className='w-[100px]'>Priority</TableHead>
+                    <TableCell align='right'>
+                      <Select
+                        value={task.priority}
+                        onValueChange={(value) =>
+                          handleTaskEdit({ priority: value as TaskPriority })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue>
+                            <PriorityOption
+                              label={capitalize(task.priority)}
+                              value={task.priority}
+                            />
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent position='popper'>
+                          {priorityOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              <PriorityOption {...option} />
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableHead>Status</TableHead>
+                    <TableCell align='right'>
+                      <Badge
+                        variant='outline'
+                        className={cn(
+                          `rounded-full text-sm`,
+                          columnBadgeClassNames[task.column.color]
+                        )}
+                      >
+                        {task.column.label}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableHead>Assignee</TableHead>
+                    <TableCell align='right' valign='middle'>
+                      <EditTaskAssigneeForm
+                        projectId={projectId}
+                        assignee={task.assignee}
+                        onEditSubmit={handleTaskEdit}
+                      />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </section>
           </div>
         </>

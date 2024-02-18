@@ -52,7 +52,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </ShowIfHasAccessFor>
       </header>
       <KanbanBoard projectId={project.id} board={board} />
-      <TaskModal />
+      <TaskModal projectId={project.id} />
     </>
   );
 }

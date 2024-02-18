@@ -36,6 +36,20 @@ export async function GET(
       priority: true,
       description: true,
       isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      reporter: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+      assignee: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
       column: {
         select: {
           id: true,
