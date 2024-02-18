@@ -1,4 +1,5 @@
 import { Input, InputProps } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import * as React from 'react';
 import { Control } from 'react-hook-form';
 import {
@@ -15,6 +16,7 @@ type InputFieldProps = InputProps & {
   control: Control<any>;
   label?: React.ReactNode;
   helperText?: React.ReactNode;
+  formItemClassName?: string;
 };
 
 const InputField = ({
@@ -22,6 +24,7 @@ const InputField = ({
   control,
   label,
   helperText,
+  formItemClassName,
   ...props
 }: InputFieldProps) => {
   return (
@@ -29,7 +32,7 @@ const InputField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <FormItem className='pb-5'>
+        <FormItem className={cn('pb-5', formItemClassName)}>
           {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
           <FormControl>
             <Input id={name} {...props} {...field} />

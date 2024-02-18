@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 
 export default function CreateProjectPage() {
   return (
-    <Card className='mx-auto mt-10 max-w-[500px] w-full '>
+    <Card className='mx-auto mt-10 max-w-[700px] w-full '>
       <CardHeader>
         <CardTitle>Create project</CardTitle>
-        <CardDescription></CardDescription>
+        <CardDescription>A project contains all the tasks</CardDescription>
       </CardHeader>
       <CardContent>
         <CreateProjectForm />

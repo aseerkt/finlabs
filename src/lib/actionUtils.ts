@@ -40,7 +40,7 @@ export const checkProjectAccess = async (
 ) => {
   const session = await checkAuthSession();
 
-  const project = await prisma.project.findFirst({
+  const project = await prisma.project.findUnique({
     where: {
       id: projectId,
     },

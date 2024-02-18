@@ -2,7 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { TaskPriority } from '@prisma/client';
+import { GripVerticalIcon } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { TASK_ID_SEARCH_PARAM_KEY, taskPriorityBgColors } from '../constants';
 
 interface TaskCardProps {
   task: {
@@ -13,23 +15,16 @@ interface TaskCardProps {
   isOverlay?: boolean;
 }
 
-const taskPriorityColors = {
-  [TaskPriority.LOW]: 'bg-blue-500',
-  [TaskPriority.MEDIUM]: 'bg-yellow-500',
-  [TaskPriority.HIGH]: 'bg-red-500',
-};
-
 export default function TaskCard({ task, isOverlay = false }: TaskCardProps) {
-  const { replace } = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const openTask = () => {
-    const params = new URLSearchParams(searchParams);
+  const openTask = (e: React.MouseEvent) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(TASK_ID_SEARCH_PARAM_KEY, String(task.id));
 
-    params.set('task', String(task.id));
-
-    replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   return (
@@ -41,11 +36,13 @@ export default function TaskCard({ task, isOverlay = false }: TaskCardProps) {
     >
       <div
         className={cn(
-          'absolute left-0 inset-y-0 w-2',
-          taskPriorityColors[task.priority]
+          'absolute left-0 inset-y-0 w-10 flex items-center justify-center',
+          taskPriorityBgColors[task.priority]
         )}
-      ></div>
-      <CardHeader>
+      >
+        {isOverlay && <GripVerticalIcon color='white' />}
+      </div>
+      <CardHeader className='pl-14'>
         <CardTitle>
           <Button
             className='p-0 text-left text-wrap'

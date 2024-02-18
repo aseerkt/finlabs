@@ -1,4 +1,6 @@
+import { getAuthSesssion } from '@/lib/authUtils';
 import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { notFound } from 'next/navigation';
 import { NextResponse } from 'next/server';
 
@@ -10,13 +12,57 @@ export async function GET(
   _request: Request,
   { params }: { params: RequestParams }
 ) {
+  const session = await getAuthSesssion();
+
+  const privateProjectReadWhere: Prisma.ProjectWhereInput['OR'] = session?.user
+    ? [
+        { authorId: session.user.id },
+        { collaborators: { some: { userId: session.user.id } } },
+      ]
+    : [];
+
   const task = await prisma.task.findFirst({
-    where: { id: Number(params.taskId) },
+    where: {
+      id: Number(params.taskId),
+      column: {
+        project: {
+          OR: [{ isPublic: true }, ...privateProjectReadWhere],
+        },
+      },
+    },
+    select: {
+      id: true,
+      title: true,
+      priority: true,
+      description: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      reporter: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+      assignee: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+      column: {
+        select: {
+          id: true,
+          label: true,
+          color: true,
+        },
+      },
+    },
   });
 
   if (!task) {
     notFound();
   }
 
-  NextResponse.json(task);
+  return NextResponse.json(task);
 }

@@ -50,9 +50,10 @@ model User {
 
   projects      Project[]
   collaborators Collaborator[]
-  tasks         Task[]
   followers     Follow[]       @relation("followers")
   followings    Follow[]       @relation("followings")
+  assignedTasks Task[]         @relation("assignee")
+  reportedTasks Task[]         @relation("reporter")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -82,10 +83,10 @@ model Project {
 model Collaborator {
   projectId Int
   userId    Int
+  role      CollaboratorRole @default(WRITE)
 
-  project Project          @relation(fields: [projectId], references: [id])
-  user    User             @relation(fields: [userId], references: [id])
-  role    CollaboratorRole @default(WRITE)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
 
   @@id([projectId, userId])
   @@map("collaborators")
@@ -113,6 +114,7 @@ model Task {
   id          Int          @id @default(autoincrement())
   title       String
   description String?
+  reporterId  Int
   assigneeId  Int?
   columnId    Int
   priority    TaskPriority @default(LOW)
@@ -120,7 +122,11 @@ model Task {
   position    Int
 
   column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  assignee User?  @relation(fields: [assigneeId], references: [id])
+  reporter User   @relation(fields: [reporterId], references: [id], name: "reporter")
+  assignee User?  @relation(fields: [assigneeId], references: [id], name: "assignee")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("tasks")
 }
