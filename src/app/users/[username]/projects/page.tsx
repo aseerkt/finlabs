@@ -1,6 +1,13 @@
 import ProjectCard from '@/components/ProjectCard';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { fetchProjectsForUser } from '@/lib/daos/projects';
+import { BookAIcon } from 'lucide-react';
 import EmptyProjectsPlaceHolder from './[projectName]/EmptyProjectsPlaceholder';
 
 type UserProjectsPageProps = {
@@ -14,9 +21,12 @@ export default async function UserProjectsPage({
 
   if (Array.isArray(projects) && projects.length === 0) {
     return (
-      <Card className='grow flex flex-col items-center justify-center'>
+      <Card className='grow py-12 flex flex-col items-center justify-center'>
         <CardHeader>
           <CardTitle>No projects added yet!</CardTitle>
+          <CardDescription className='text-center flex justify-center text-gray-500 pt-4'>
+            <BookAIcon size={56} />
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <EmptyProjectsPlaceHolder />

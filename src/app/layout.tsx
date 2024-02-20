@@ -1,14 +1,16 @@
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import SessionProvider from '@/providers/SessionProvider';
+import HolyLoader from 'holy-loader';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import { Inter } from 'next/font/google';
+import { Ubuntu } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 import './globals.css';
 
-const inter = Inter({
+const ubuntu = Ubuntu({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '700'],
   variable: '--font-inter',
 });
 
@@ -27,9 +29,10 @@ export default async function RootLayout({ children }: PropsWithChildren<{}>) {
       <body
         className={cn(
           'min-h-screen font-sans bg-slate-50 antialiased',
-          inter.className
+          ubuntu.className
         )}
       >
+        <HolyLoader />
         <SessionProvider session={session}>{children}</SessionProvider>
         <Toaster />
       </body>
