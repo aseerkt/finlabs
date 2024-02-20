@@ -1,13 +1,13 @@
 'use client';
 
 import { CollaboratorRole } from '@prisma/client';
-import { createContext, useCallback, useContext } from 'react';
+import { createContext, useContext } from 'react';
 
 type ProjectAccessRole = CollaboratorRole | 'AUTHOR';
 
-type IProjectAccessContext = (requiredRole: ProjectAccessRole) => boolean;
+type IProjectAccessContext = ProjectAccessRole | null;
 
-const ProjectAccessContext = createContext<IProjectAccessContext>(() => false);
+const ProjectAccessContext = createContext<IProjectAccessContext>(null);
 
 const rolePrecedence: Record<ProjectAccessRole, number> = {
   READ: 0,
@@ -25,22 +25,16 @@ export function ProjectAccessProvider({
   role,
   children,
 }: ProjectAccessProviderProps) {
-  const hasAccess = useCallback(
-    (requiredRole: ProjectAccessRole) => {
-      return rolePrecedence[role] >= rolePrecedence[requiredRole];
-    },
-    [role]
-  );
   return (
-    <ProjectAccessContext.Provider value={hasAccess}>
+    <ProjectAccessContext.Provider value={role}>
       {children}
     </ProjectAccessContext.Provider>
   );
 }
 
-export function useProjectAccess(role: ProjectAccessRole) {
-  const hasAccess = useContext(ProjectAccessContext);
-  return hasAccess(role);
+export function useProjectAccess(requiredRole: ProjectAccessRole) {
+  const role = useContext(ProjectAccessContext);
+  return rolePrecedence[role!] >= rolePrecedence[requiredRole];
 }
 
 export function ShowIfHasAccessFor({

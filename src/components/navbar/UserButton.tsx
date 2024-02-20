@@ -1,6 +1,7 @@
 'use client';
 
 import { resetCache } from '@/lib/actionUtils';
+import { ChevronDown } from 'lucide-react';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -35,10 +36,11 @@ export default function UserButton({ user }: UserButtonProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className='flex items-center border-2 p-2 hover:bg-gray-100 rounded-md space-x-3'>
         <Avatar className='bg-orange-300'>
           <AvatarFallback>{extractInitialFromName(user.name)}</AvatarFallback>
         </Avatar>
+        <ChevronDown className='text-gray-500' />
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
         <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
@@ -49,6 +51,16 @@ export default function UserButton({ user }: UserButtonProps) {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href={`/users/${user.username}/projects`}>Your projects</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={`/users/${user.username}/followings`}>
+              Your followings
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={`/users/${user.username}/followers`}>
+              Your followers
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

@@ -47,6 +47,7 @@ model User {
   location        String?
   website         String?
   password        String
+  bio             String?
 
   projects      Project[]
   collaborators Collaborator[]

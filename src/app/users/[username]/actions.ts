@@ -80,3 +80,10 @@ export const editProfile = async (payload: ProfileSchema) => {
   await prisma.user.update({ where: { id: session.user.id }, data: payload });
   revalidatePath(`/users/${session.user.username}`);
 };
+
+export const editBio = async (bio: string) => {
+  const session = await checkAuthSession();
+
+  await prisma.user.update({ where: { id: session.user.id }, data: { bio } });
+  revalidatePath(`/users/${session.user.username}`);
+};

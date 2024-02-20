@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { fetchUserByUsername } from '@/lib/daos/users';
 import { Metadata } from 'next';
+import UserBio from './UserBio';
 
 export type UserPageProps = {
   params: { username: string };
@@ -26,12 +27,12 @@ export default async function UserPage({ params }: UserPageProps) {
   const user = await fetchUserByUsername(params.username, true);
 
   return (
-    <Card className='grow'>
+    <Card className='grow min-h-[400px] h-max'>
       <CardHeader>
-        <CardTitle className='text-4xl'>Hi, I am {user.name}</CardTitle>
+        <CardTitle className='text-xl border-b-2 pb-1'>User Bio</CardTitle>
       </CardHeader>
       <CardContent>
-        <h2 className='font-bold text-xl'>User Feeds</h2>
+        <UserBio userId={user.id} bio={user.bio} />
       </CardContent>
     </Card>
   );

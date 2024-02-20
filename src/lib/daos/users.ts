@@ -16,6 +16,7 @@ export const fetchUserByUsername = cache(
         followingsCount: true,
         location: true,
         website: true,
+        bio: true,
         ...(checkIsFollowing && session?.user.id
           ? {
               followings: {

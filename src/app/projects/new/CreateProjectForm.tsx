@@ -31,7 +31,7 @@ export default function CreateProjectForm() {
     try {
       await createProject({
         ...values,
-        name: convertToGithubRepoName(values.name),
+        name: values.name,
         isPublic: values.isPublic === 'true',
       });
     } catch (error) {
@@ -45,10 +45,20 @@ export default function CreateProjectForm() {
   const projectName = convertToGithubRepoName(watch('name'));
   const isPublic = watch('isPublic') === 'true';
 
+  const visibilityOptions = [
+    { label: 'Public', value: 'true' },
+    { label: 'Private', value: 'false' },
+  ];
+
   return (
     <Form {...form}>
       <form onSubmit={onSubmit}>
-        <InputField label='Project name' name='name' control={control} />
+        <InputField
+          label='Project name'
+          name='name'
+          control={control}
+          autoFocus
+        />
         {projectName && (
           <Alert variant='success' className='mb-4'>
             <AlertTitle>
@@ -70,14 +80,13 @@ export default function CreateProjectForm() {
           name='isPublic'
           control={control}
           label='Visibility'
-          options={[
-            { label: 'Public', value: 'true' },
-            { label: 'Private', value: 'false' },
-          ]}
+          options={visibilityOptions}
           helperText={
-            isPublic
-              ? 'Anyone on the internet can see this project. You choose who can write.'
-              : 'You choose who can see and write to this project.'
+            <span className='text-gray-500'>
+              {isPublic
+                ? 'Anyone on the internet can see this project. You choose who can write.'
+                : 'You choose who can see and write to this project.'}
+            </span>
           }
         />
         <Button className='mt-5' type='submit' disabled={isSubmitting}>

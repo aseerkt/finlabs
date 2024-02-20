@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import UserProfileActions from './UserProfileActions';
 
-interface UserProfileSectionProps {
+export interface UserProfileSectionProps {
   user: {
     id: number;
     username: string;
@@ -15,11 +15,15 @@ interface UserProfileSectionProps {
     followingsCount: number;
     isFollowing: boolean;
   };
+  isCurrentUser: boolean;
 }
 
-export default function UserProfileSection({ user }: UserProfileSectionProps) {
+export default function UserProfileSection({
+  user,
+  isCurrentUser,
+}: UserProfileSectionProps) {
   return (
-    <Card className='w-[296px] bg-transparent'>
+    <Card className='bg-transparent'>
       <CardContent className='pt-6'>
         <div className='flex md:flex-col gap-3 md:gap-6'>
           <Image
@@ -34,7 +38,7 @@ export default function UserProfileSection({ user }: UserProfileSectionProps) {
             <p className='text-xl mb-3'>{user?.username}</p>
           </div>
         </div>
-        <UserProfileActions user={user} />
+        <UserProfileActions user={user} isCurrentUser={isCurrentUser} />
         <div className='flex my-3 items-center space-x-3'>
           <UsersIcon className='-mr-1' size={16} />
           <span className='flex items-center '>
