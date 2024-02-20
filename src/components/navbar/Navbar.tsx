@@ -19,7 +19,7 @@ export default function Navbar({ title }: NavbarProps) {
         <Link aria-label='home-link' href='/'>
           <Image src='/finlabs-logo.svg' alt='Finlabs' width={32} height={32} />
         </Link>
-        <h3 className='font-semibold'>{title}</h3>
+        <h3 className='font-semibold text-xl'>{title}</h3>
       </div>
       <div className='flex gap-3 items-center'>
         {session?.data?.user ? (

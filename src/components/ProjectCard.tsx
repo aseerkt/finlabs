@@ -28,8 +28,8 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <li>
-      <Card>
+    <li className='inline-block h-full'>
+      <Card className='h-full'>
         <CardHeader className='pb-2'>
           <CardTitle className='flex space-x-3 items-end'>
             <Link

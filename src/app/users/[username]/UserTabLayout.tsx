@@ -54,9 +54,9 @@ export default function UserTabLayout({
         ))}
       </TabsList>
       <TabsContent value={currentSubPath}>
-        <div className='max-w-[1280px] w-full h-full flex gap-6 px-6 mt-3 mx-auto'>
-          {userSection}
-          {children}
+        <div className='max-w-[1280px] relative w-full h-full flex px-6 mt-3 mx-auto'>
+          <div className='absolute w-[296px]'>{userSection}</div>
+          <div className='ml-[320px] grow'>{children}</div>
         </div>
       </TabsContent>
     </Tabs>

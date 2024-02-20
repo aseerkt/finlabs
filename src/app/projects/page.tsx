@@ -39,7 +39,7 @@ export default async function ProjectsPage() {
   return (
     <div className='flex flex-col'>
       <Navbar title='Projects' />
-      <ul className=' max-w-screen-md w-full mx-auto mt-3 p-3 grow flex flex-col gap-3'>
+      <ul className=' max-w-screen-xl w-full mx-auto mt-3 p-3 grow grid grid-cols-2 gap-3'>
         {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}

@@ -47,10 +47,11 @@ export default function MdEditorField({
                 commands={editorCommands}
                 extraCommands={editorExtraCommands}
                 preview='edit'
+                {...props}
                 previewOptions={{
+                  ...props.previewOptions,
                   rehypePlugins: [[rehypeSanitize]],
                 }}
-                {...props}
                 {...field}
               />
             </FormControl>

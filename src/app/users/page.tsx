@@ -9,7 +9,7 @@ export default async function UserListPage() {
   return (
     <div className='flex flex-col'>
       <Navbar title='All users' />
-      <ul className=' max-w-screen-md mx-auto mt-3 p-3 grow flex flex-col gap-3'>
+      <ul className=' max-w-screen-xl mx-auto mt-3 p-3 grow grid grid-cols-3 gap-3'>
         {users.map((user) => (
           <li key={user.id}>
             <Card>
@@ -17,7 +17,7 @@ export default async function UserListPage() {
                 <div>
                   <Link
                     href={`/users/${user.username}`}
-                    className='font-semibold'
+                    className='font-semibold hover:underline'
                   >
                     {user.username}
                   </Link>{' '}

@@ -26,7 +26,7 @@ export default async function RootLayout({ children }: PropsWithChildren<{}>) {
     <html lang='en'>
       <body
         className={cn(
-          'min-h-screen font-sans bg-slate-100 antialiased',
+          'min-h-screen font-sans bg-slate-50 antialiased',
           inter.className
         )}
       >
