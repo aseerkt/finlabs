@@ -8,6 +8,10 @@ import { ProfileSchema } from './schemas';
 export const toggleFollow = async (userId: number) => {
   const session = await checkAuthSession();
 
+  if (session.user.id === userId) {
+    throw new Error('User cannot follow himself');
+  }
+
   const follow = await prisma.follow.findUnique({
     where: {
       followerId_followingId: {
