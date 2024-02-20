@@ -3,8 +3,8 @@
 import { getAuthSesssion } from '@/lib/authUtils';
 import prisma from '@/lib/prisma';
 import { convertToGithubRepoName } from '@/lib/utils';
+import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 interface CreateProjectPayload {
   name: string;
@@ -55,9 +55,13 @@ export const createProject = async (values: CreateProjectPayload) => {
     });
 
     revalidatePath(`/users/${session.user.username}/projects`);
-
-    redirect(`/users/${session.user.username}/projects/${project.name}`);
+    return project;
   } catch (error) {
     console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        throw Error('A project with the same name already exists');
+      }
+    }
   }
 };

@@ -4,9 +4,11 @@ import { InputField, RadioGroupField, TextAreaField } from '@/components/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { toast } from '@/components/ui/use-toast';
+import { toastUnknownError } from '@/components/ui/use-toast';
 import { convertToGithubRepoName } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { createProject } from './actions';
 import { createProjectSchema } from './schema';
@@ -27,18 +29,23 @@ export default function CreateProjectForm() {
     formState: { isSubmitting },
   } = form;
 
+  const router = useRouter();
+  const session = useSession();
+
   const onSubmit = handleSubmit(async (values) => {
     try {
-      await createProject({
+      const result = await createProject({
         ...values,
         name: values.name,
         isPublic: values.isPublic === 'true',
       });
+      if (result?.id) {
+        router.replace(
+          `/users/${session.data!.user.username}/projects/${result.name}`
+        );
+      }
     } catch (error) {
-      toast({
-        title: 'Something went wrong',
-        description: (error as Error).message,
-      });
+      toastUnknownError(error);
     }
   });
 
