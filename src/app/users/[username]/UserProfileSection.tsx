@@ -16,11 +16,13 @@ export interface UserProfileSectionProps {
     isFollowing: boolean;
   };
   isCurrentUser: boolean;
+  isLoggedIn: boolean;
 }
 
 export default function UserProfileSection({
   user,
   isCurrentUser,
+  isLoggedIn,
 }: UserProfileSectionProps) {
   return (
     <Card className='bg-transparent'>
@@ -38,7 +40,9 @@ export default function UserProfileSection({
             <p className='text-xl mb-3'>{user?.username}</p>
           </div>
         </div>
-        <UserProfileActions user={user} isCurrentUser={isCurrentUser} />
+        {isLoggedIn && (
+          <UserProfileActions user={user} isCurrentUser={isCurrentUser} />
+        )}
         <div className='flex my-3 items-center space-x-3'>
           <UsersIcon className='-mr-1' size={16} />
           <span className='flex items-center '>

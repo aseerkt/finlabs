@@ -19,7 +19,15 @@ export default async function UserLayout({
 
   return (
     <div className='h-screen flex flex-col'>
-      <TabLayoutList userSection={<UserProfileSection user={user} isCurrentUser={isCurrentUser} />}>
+      <TabLayoutList
+        userSection={
+          <UserProfileSection
+            user={user}
+            isCurrentUser={isCurrentUser}
+            isLoggedIn={Boolean(session?.user)}
+          />
+        }
+      >
         {children}
       </TabLayoutList>
     </div>

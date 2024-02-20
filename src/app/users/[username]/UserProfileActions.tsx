@@ -7,7 +7,7 @@ import { UserProfileSectionProps } from './UserProfileSection';
 export default function UserProfileActions({
   user,
   isCurrentUser,
-}: UserProfileSectionProps) {
+}: Omit<UserProfileSectionProps, 'isLoggedIn'>) {
   return (
     <div className='w-full'>
       {isCurrentUser ? (
