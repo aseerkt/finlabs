@@ -33,7 +33,7 @@ export const getFollowers = cache(async (userId: number) => {
 
   return followers.map((follow) => ({
     ...follow.follower,
-    isFollowing: Boolean(follow.follower.followings.length),
+    isFollowing: Boolean(follow.follower.followings?.length),
     followings: undefined,
   }));
 });
@@ -56,7 +56,7 @@ export const getFollowings = cache(async (userId: number) => {
 
   return followings.map((follow) => ({
     ...follow.following,
-    isFollowing: Boolean(follow.following.followings.length),
+    isFollowing: Boolean(follow.following.followings?.length),
     followings: undefined,
   }));
 });
