@@ -288,7 +288,7 @@ export default function KanbanBoard({
               isOverlay
             >
               {board.items[overlay.itemId!].map((taskId) => (
-                <TaskCard key={taskId} task={board.tasks[taskId]} />
+                <TaskCard key={taskId} task={board.tasks[taskId]} isOverlay />
               ))}
             </ColumnCard>
           )}
