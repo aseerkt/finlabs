@@ -5,6 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Button } from '../ui/button';
 import {
@@ -29,9 +30,11 @@ const extractInitialFromName = (name: string) => {
 };
 
 export default function UserButton({ user }: UserButtonProps) {
+  const router = useRouter();
   const handleLogout = () => {
     signOut({ redirect: false });
     resetCache();
+    router.refresh();
   };
 
   return (
