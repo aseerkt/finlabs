@@ -26,6 +26,7 @@ import { capitalize } from 'lodash';
 import Link from 'next/link';
 import { useState } from 'react';
 import useSWR from 'swr';
+import { useProjectAccess } from '../ProjectContext';
 import { priorityOptions } from '../constants';
 import { PriorityOption } from './AddTask';
 import EditTaskAssigneeForm from './EditTaskAssigneeForm';
@@ -62,6 +63,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
     `${window.location.origin}/api/tasks/${taskId}`,
     fetcher
   );
+  const hasEditAcces = useProjectAccess('WRITE');
 
   const [editMode, setEditMode] = useState<EditMode>();
 
@@ -69,7 +71,11 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
     setEditMode(undefined);
   };
 
-  const handleEditMode = (mode: EditMode) => () => setEditMode(mode);
+  const handleEditMode = (mode: EditMode) => () => {
+    if (hasEditAcces) {
+      setEditMode(mode);
+    }
+  };
 
   const handleTaskEdit = async (payload: EditTaskPayload) => {
     if (!task) {
@@ -109,15 +115,17 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                   <span>{task?.title}</span>
                   <span className='text-gray-400'> #{task.id}</span>
                 </div>
-                <Button
-                  aria-label='edit title button'
-                  size='sm'
-                  variant='link'
-                  className='ml-auto inline-block px-0'
-                  onClick={handleEditMode('TITLE')}
-                >
-                  Edit title
-                </Button>
+                {hasEditAcces && (
+                  <Button
+                    aria-label='edit title button'
+                    size='sm'
+                    variant='link'
+                    className='ml-auto inline-block px-0'
+                    onClick={handleEditMode('TITLE')}
+                  >
+                    Edit title
+                  </Button>
+                )}
               </DialogTitle>
             )}
             <DialogDescription className='text-gray-600'>
@@ -158,22 +166,24 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                     )}
                   </div>
                   <div className='flex items-center space-x-3'>
-                    <Button
-                      size='sm'
-                      variant='link'
-                      className='px-0 w-max'
-                      aria-label='edit description button'
-                      onClick={handleEditMode('DESCRIPTION')}
-                    >
-                      Edit description
-                    </Button>
-                    <span className='text-sm text-gray-500'>
+                    {hasEditAcces && (
+                      <Button
+                        size='sm'
+                        variant='link'
+                        className='px-0 w-max'
+                        aria-label='edit description button'
+                        disabled={!hasEditAcces}
+                        onClick={handleEditMode('DESCRIPTION')}
+                      >
+                        Edit description
+                      </Button>
+                    )}
+                    <small className='text-sm text-gray-500'>
                       updated {dayjs(task.updatedAt).fromNow()}
-                    </span>
+                    </small>
                   </div>
                 </div>
               )}
-              <small></small>
             </section>
             <section className='flex flex-col'>
               <Table>
@@ -181,28 +191,41 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                   <TableRow>
                     <TableHead className='w-[100px]'>Priority</TableHead>
                     <TableCell align='right'>
-                      <Select
-                        value={task.priority}
-                        onValueChange={(value) =>
-                          handleTaskEdit({ priority: value as TaskPriority })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue>
-                            <PriorityOption
-                              label={capitalize(task.priority)}
-                              value={task.priority}
-                            />
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent position='popper'>
-                          {priorityOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              <PriorityOption {...option} />
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      {hasEditAcces ? (
+                        <Select
+                          value={task.priority}
+                          disabled={!hasEditAcces}
+                          onValueChange={(value) =>
+                            handleTaskEdit({ priority: value as TaskPriority })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue>
+                              <PriorityOption
+                                label={capitalize(task.priority)}
+                                value={task.priority}
+                              />
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent position='popper'>
+                            {priorityOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                <PriorityOption {...option} />
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className='border-2 rounded-md p-2'>
+                          <PriorityOption
+                            label={capitalize(task.priority)}
+                            value={task.priority}
+                          />
+                        </div>
+                      )}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -222,11 +245,27 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                   <TableRow>
                     <TableHead>Assignee</TableHead>
                     <TableCell align='right' valign='middle'>
-                      <EditTaskAssigneeForm
-                        projectId={projectId}
-                        assignee={task.assignee}
-                        onEditSubmit={handleTaskEdit}
-                      />
+                      {hasEditAcces ? (
+                        <EditTaskAssigneeForm
+                          projectId={projectId}
+                          assignee={task.assignee}
+                          onEditSubmit={handleTaskEdit}
+                          disabled={!hasEditAcces}
+                        />
+                      ) : (
+                        <div className='border-2 flex items-center rounded-md p-2'>
+                          {task.assignee?.username ? (
+                            <Link
+                              className='font-semibold hover:underline'
+                              href={`/users/${task.assignee.username}`}
+                            >
+                              {task.assignee.username}
+                            </Link>
+                          ) : (
+                            <p className='text-gray text-sm'>Not assigned</p>
+                          )}
+                        </div>
+                      )}
                     </TableCell>
                   </TableRow>
                 </TableBody>

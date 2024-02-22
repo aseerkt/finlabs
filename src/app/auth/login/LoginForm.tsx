@@ -8,6 +8,7 @@ import { resetCache } from '@/lib/actionUtils';
 import useGuestRedirect from '@/lib/hooks/useGuestRedirect';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { loginSchema } from './schema';
@@ -29,6 +30,8 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = form;
 
+  const router = useRouter();
+
   const onSubmit = handleSubmit(async (values: z.infer<typeof loginSchema>) => {
     try {
       const result = await signIn('credentials', {
@@ -42,6 +45,7 @@ export default function LoginForm() {
           description: 'Glad to have you here',
           variant: 'success',
         });
+        router.refresh();
       } else if (result?.error) {
         toast({
           title: 'Login failed',

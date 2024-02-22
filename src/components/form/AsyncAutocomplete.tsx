@@ -43,6 +43,7 @@ interface ComboBoxFieldProps<Option, Value> {
   label?: React.ReactNode;
   helperText?: React.ReactNode;
   multiple?: boolean;
+  disabled?: boolean;
 }
 
 export default function AsyncAutocomplete<Option, Value>({
@@ -62,6 +63,7 @@ export default function AsyncAutocomplete<Option, Value>({
   noResultPlaceholder = 'No results found',
   helperText,
   multiple = false,
+  disabled = false,
 }: ComboBoxFieldProps<Option, Value>) {
   const { append, remove } = useFieldArray({ name, control });
   return (
@@ -92,7 +94,7 @@ export default function AsyncAutocomplete<Option, Value>({
           <FormItem className='grow'>
             {label && <FormLabel>{label}</FormLabel>}
             <Popover>
-              <PopoverTrigger asChild>
+              <PopoverTrigger disabled={disabled} asChild>
                 <FormControl>
                   <Button
                     variant='outline'

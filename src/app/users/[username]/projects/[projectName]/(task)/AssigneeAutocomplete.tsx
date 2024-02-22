@@ -9,6 +9,7 @@ interface AssigneeAutocompleteProps {
   name: string;
   control: Control<any>;
   label?: string;
+  disabled?: boolean;
 }
 
 interface Assignee {
@@ -22,10 +23,11 @@ export function AssigneeAutocomplete({
   name,
   control,
   label,
+  disabled = false,
 }: AssigneeAutocompleteProps) {
   const session = useSession();
   const [assigneeOptions, setAssigneeOptions] = useState<Assignee[]>([
-    session.data!.user,
+    ...(session?.data?.user ? [session.data.user] : []),
   ]);
 
   const fetchAssignees = (username?: string) => {
@@ -33,7 +35,7 @@ export function AssigneeAutocomplete({
     if (username?.length) {
       searchParams.set('username', username);
     }
-    const currentUser = session.data!.user;
+    const assignees = session.data?.user ? [session.data.user] : [];
     fetch(
       `${
         window.location.origin
@@ -42,7 +44,7 @@ export function AssigneeAutocomplete({
       .then((res) => res.json())
       .then((result) =>
         setAssigneeOptions(
-          [currentUser].concat(...(Array.isArray(result) ? result : []))
+          assignees.concat(...(Array.isArray(result) ? result : []))
         )
       );
   };
@@ -78,6 +80,7 @@ export function AssigneeAutocomplete({
       placeholder='Select assignee'
       autocompletePlaceholder='Search by username'
       noResultPlaceholder='No assignees found'
+      disabled={disabled}
     />
   );
 }

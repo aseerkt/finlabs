@@ -57,7 +57,6 @@ export const createProject = async (values: CreateProjectPayload) => {
     revalidatePath(`/users/${session.user.username}/projects`);
     return project;
   } catch (error) {
-    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         throw Error('A project with the same name already exists');

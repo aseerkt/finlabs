@@ -10,14 +10,16 @@ interface EditTaskAssigneeFormProps
     id: number;
     username: string;
   } | null;
+  disabled?: boolean;
 }
 
 export default function EditTaskAssigneeForm({
   projectId,
   assignee,
   onEditSubmit,
+  disabled = false,
 }: EditTaskAssigneeFormProps) {
-  const form = useForm({ defaultValues: { assignee } });
+  const form = useForm({ defaultValues: { assignee }, disabled });
 
   const handleAssigneeSubmit = form.handleSubmit(onEditSubmit);
 
@@ -28,6 +30,7 @@ export default function EditTaskAssigneeForm({
           name='assignee'
           control={form.control}
           projectId={projectId}
+          disabled={disabled}
         />
       </form>
     </Form>
