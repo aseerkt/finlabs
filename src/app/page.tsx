@@ -5,20 +5,22 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div
-      className='min-h-screen flex flex-col bg-opacity-0'
-      style={{
-        backgroundImage: 'url("/finlabs-home.jpg")',
-      }}
-    >
-      <Navbar title='Finlabs' />
+    <div className='relative min-h-screen flex flex-col bg-opacity-0 bg-blue-950'>
+      <Image
+        src='/finlabs-home.jpg'
+        alt='homepage'
+        width={1200}
+        height={900}
+        className='w-full h-full absolute inset-0 -z-10'
+      />
+      <Navbar title={<span className='text-blue-800'>finlabs</span>} />
       <div className='grow flex items-center justify-center'>
         <div className='h-full bg-gray-800 bg-opacity-30 shadow-md rounded-2xl  grid grid-cols-2 space-x-10 p-20 items-center max-w-screen-lg mx-auto'>
           <div className='text-balance'>
-            <h1 className='text-pink-400 font-extrabold mb-4 text-5xl'>
-              Finlabs
+            <h1 className='text-blue-400 font-extrabold mb-4 text-5xl'>
+              finlabs
             </h1>{' '}
-            <p className='text-3xl text-gray-300 font-semibold mb-5'>
+            <p className='text-2xl text-gray-300 font-semibold mb-5'>
               Streamline your projects with Finlabs - the flexible project
               management tool for modern teams
             </p>

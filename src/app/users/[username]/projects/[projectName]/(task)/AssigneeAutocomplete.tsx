@@ -1,6 +1,5 @@
 import { AsyncAutocomplete } from '@/components/form';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Control } from 'react-hook-form';
 
@@ -43,9 +42,7 @@ export function AssigneeAutocomplete({
     )
       .then((res) => res.json())
       .then((result) =>
-        setAssigneeOptions(
-          assignees.concat(...(Array.isArray(result) ? result : []))
-        )
+        setAssigneeOptions(assignees.concat(result?.users ? result.users : []))
       );
   };
 
@@ -71,9 +68,7 @@ export function AssigneeAutocomplete({
           <span className='text-gray-500'>{option.name}</span>
         </div>
       )}
-      renderValue={(value) => (
-        <Link href={`/users/${value.username}`}>{value.username}</Link>
-      )}
+      renderValue={(value) => value.username}
       optionKey='username'
       valueKey='username'
       label={label}

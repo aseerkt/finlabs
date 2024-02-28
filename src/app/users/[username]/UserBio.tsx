@@ -1,11 +1,11 @@
 'use client';
 
+import { Markdown } from '@/components/Markdown';
 import { MdEditorField } from '@/components/form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { toastUnknownError } from '@/components/ui/use-toast';
 import { useIsMounted } from '@/lib/hooks';
-import Editor from '@uiw/react-md-editor';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -34,10 +34,7 @@ export default function UserBio({ userId, bio }: UserBioProps) {
               Edit bio
             </Button>
           </header>
-          <Editor.Markdown
-            wrapperElement={{ 'data-color-mode': 'light' }}
-            source={bio}
-          />
+          <Markdown source={bio} />
         </div>
       ) : (
         <div>

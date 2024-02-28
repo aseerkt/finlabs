@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils';
 import { CommandItem } from 'cmdk';
 import { isEmpty } from 'lodash';
 import { ChevronsUpDown, XCircleIcon } from 'lucide-react';
+import { useState } from 'react';
 import { Control, useFieldArray } from 'react-hook-form';
 
 interface ComboBoxFieldProps<Option, Value> {
@@ -66,6 +67,8 @@ export default function AsyncAutocomplete<Option, Value>({
   disabled = false,
 }: ComboBoxFieldProps<Option, Value>) {
   const { append, remove } = useFieldArray({ name, control });
+  const [open, setOpen] = useState(false);
+  const handleOpenChange = (open: boolean) => setOpen(open);
   return (
     <FormField
       control={control}
@@ -93,7 +96,7 @@ export default function AsyncAutocomplete<Option, Value>({
         return (
           <FormItem className='grow'>
             {label && <FormLabel>{label}</FormLabel>}
-            <Popover>
+            <Popover open={open} onOpenChange={handleOpenChange}>
               <PopoverTrigger disabled={disabled} asChild>
                 <FormControl>
                   <Button
@@ -126,9 +129,13 @@ export default function AsyncAutocomplete<Option, Value>({
                         value={getSearchValue(option)}
                         key={option[optionKey] as string}
                         onSelect={() => {
-                          multiple
-                            ? append(getOptionValue(option))
-                            : field.onChange(getOptionValue(option));
+                          const value = getOptionValue(option);
+                          if (multiple) {
+                            append(value);
+                          } else {
+                            field.onChange(value);
+                            handleOpenChange(false);
+                          }
                         }}
                       >
                         {renderOption(option, index)}

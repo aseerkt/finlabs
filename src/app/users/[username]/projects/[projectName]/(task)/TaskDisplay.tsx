@@ -1,3 +1,4 @@
+import { Markdown } from '@/components/Markdown';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DialogDescription, DialogHeader } from '@/components/ui/dialog';
@@ -19,7 +20,6 @@ import { toast } from '@/components/ui/use-toast';
 import { cn, fetcher } from '@/lib/utils';
 import { Prisma, TaskPriority } from '@prisma/client';
 import { DialogTitle } from '@radix-ui/react-dialog';
-import MDEditor from '@uiw/react-md-editor';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { capitalize } from 'lodash';
@@ -83,11 +83,20 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
     }
 
     try {
-      const result = await editTask(task.id, payload);
-      if (result) {
-        mutate((data) => ({ ...data!, ...result }));
-        handleCancelEdit();
-      }
+      await mutate(
+        async (current) => {
+          const result = await editTask(task.id, payload);
+          handleCancelEdit();
+          return { ...current!, ...result };
+        },
+        {
+          optimisticData: (current) => ({ ...current!, ...payload }),
+          rollbackOnError: true,
+          populateCache: true,
+          revalidate: false,
+          throwOnError: true,
+        }
+      );
     } catch (error) {
       toast({
         title: 'Something went wrong',
@@ -155,10 +164,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                 <div className=' flex flex-col justify-start grow'>
                   <div className='grow'>
                     {task.description ? (
-                      <MDEditor.Markdown
-                        source={task.description}
-                        wrapperElement={{ 'data-color-mode': 'light' }}
-                      />
+                      <Markdown source={task.description} />
                     ) : (
                       <span className='text-gray-500'>
                         No description provided

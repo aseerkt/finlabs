@@ -80,3 +80,11 @@
 .w-md-editor-text {
   font-family: var(--font-inter) !important;
 }
+
+.wmde-markdown ul {
+  list-style: disc;
+}
+
+.wmde-markdown ol {
+  list-style: decimal;
+}
