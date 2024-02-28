@@ -1,5 +1,7 @@
 # Finlabs
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/091a823fee7f4b708f6d50f7fc6a7a19)](https://app.codacy.com/gh/aseerkt/finlabs?utm_source=github.com&utm_medium=referral&utm_content=aseerkt/finlabs&utm_campaign=Badge_Grade)
+
 > Project collaboration
 
 ### Screenshots
