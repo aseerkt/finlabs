@@ -1,4 +1,4 @@
-export { default as AsyncAutocomplete } from './AsyncAutocomplete';
+export * from './AsyncAutocompleteField';
 export { default as InputField } from './InputField';
 export * from './MdEditorField';
 export { default as RadioGroupField } from './RadioGroupField';

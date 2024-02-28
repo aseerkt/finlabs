@@ -1,6 +1,6 @@
 'use client';
 
-import { AsyncAutocomplete, SelectField } from '@/components/form';
+import { AsyncAutocompleteField, SelectField } from '@/components/form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
@@ -67,7 +67,7 @@ export default function InviteCollaborators({
   return (
     <Form {...form}>
       <form onSubmit={handleInviteSubmit} className='flex gap-2'>
-        <AsyncAutocomplete
+        <AsyncAutocompleteField
           name='collaborators'
           control={form.control}
           placeholder='Select collaborators'

@@ -1,4 +1,4 @@
-import { AsyncAutocomplete } from '@/components/form';
+import { AsyncAutocompleteField } from '@/components/form';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Control } from 'react-hook-form';
@@ -52,7 +52,7 @@ export function AssigneeAutocomplete({
   }, []);
 
   return (
-    <AsyncAutocomplete
+    <AsyncAutocompleteField
       name={name}
       control={control}
       options={assigneeOptions}
