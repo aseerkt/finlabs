@@ -38,10 +38,13 @@ export default function AddTask({
       title: '',
       priority: TaskPriority.LOW,
       description: '',
+      assignee: undefined,
     },
     disabled: !columnId,
     resolver: zodResolver(addTaskSchema),
   });
+
+  console.log(form.getValues());
 
   const handleAddTask = form.handleSubmit(async (values) => {
     try {

@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -69,29 +67,43 @@ export default function AsyncAutocomplete<Option, Value>({
   const { append, remove } = useFieldArray({ name, control });
   const [open, setOpen] = useState(false);
   const handleOpenChange = (open: boolean) => setOpen(open);
+
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => {
-        const valueDisplay = isEmpty(field.value)
-          ? placeholder
-          : multiple
-          ? (field.value as Value[]).map((value, index) => (
-              <div
-                className='text-sm flex items-center gap-2 border-1 rounded-sm bg-cyan-600 text-white px-2 py-1'
-                key={value[valueKey] as string}
+        const valueDisplay = isEmpty(field.value) ? (
+          placeholder
+        ) : multiple ? (
+          (field.value as Value[]).map((value, index) => (
+            <div
+              className='text-sm flex items-center gap-2 border-1 rounded-sm bg-cyan-600 text-white px-2 py-1'
+              key={value[valueKey] as string}
+            >
+              {renderValue(value)}
+              <button
+                aria-label={`unselect value ${value[valueKey]}`}
+                onClick={() => remove(index)}
               >
-                {renderValue(value)}
-                <button
-                  aria-label={`unselect value ${value[valueKey]}`}
-                  onClick={() => remove(index)}
-                >
-                  <XCircleIcon height={14} width={14} />
-                </button>
-              </div>
-            ))
-          : renderValue(field.value);
+                <XCircleIcon height={14} width={14} />
+              </button>
+            </div>
+          ))
+        ) : (
+          <div className='flex justify-between gap-2 grow'>
+            {renderValue(field.value)}
+            <button
+              aria-label='unselect value'
+              onClick={(e) => {
+                e.stopPropagation();
+                field.onChange(undefined);
+              }}
+            >
+              <XCircleIcon height={14} width={14} />
+            </button>
+          </div>
+        );
 
         return (
           <FormItem className='grow'>
@@ -101,13 +113,9 @@ export default function AsyncAutocomplete<Option, Value>({
                 <FormControl>
                   <Button
                     variant='outline'
-                    className={cn(
-                      'w-full justify-between',
-                      ((multiple && !field.value.length) || !field.value) &&
-                        'text-muted-foreground'
-                    )}
+                    className={cn('w-full justify-between hover:bg-white')}
                   >
-                    <div className='flex gap-1'>{valueDisplay}</div>
+                    <div className='flex gap-1 grow'>{valueDisplay}</div>
                     <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                   </Button>
                 </FormControl>
