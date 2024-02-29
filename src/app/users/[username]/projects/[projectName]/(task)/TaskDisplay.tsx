@@ -61,7 +61,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
     mutate,
   } = useSWR<TaskType>(
     `${window.location.origin}/api/tasks/${taskId}`,
-    fetcher
+    fetcher,
   );
   const hasEditAcces = useProjectAccess('WRITE');
 
@@ -95,7 +95,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
           populateCache: true,
           revalidate: false,
           throwOnError: true,
-        }
+        },
       );
     } catch (error) {
       toast({
@@ -111,7 +111,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
       {isLoading && <TaskSkeleton />}
       {task && (
         <>
-          <DialogHeader className='p-6 pt-10 border-b-2'>
+          <DialogHeader className='border-b-2 p-6 pt-10'>
             {editMode === 'TITLE' ? (
               <EditTaskTitle
                 title={task.title}
@@ -119,7 +119,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                 onEditSubmit={handleTaskEdit}
               />
             ) : (
-              <DialogTitle className='text-2xl font-bold flex justify-between'>
+              <DialogTitle className='flex justify-between text-2xl font-bold'>
                 <div>
                   <span>{task?.title}</span>
                   <span className='text-gray-400'> #{task.id}</span>
@@ -149,11 +149,26 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
               created {dayjs(task.createdAt).fromNow()}
             </DialogDescription>
           </DialogHeader>
-          <div className='p-6 grow border-t-2 grid grid-cols-[auto_380px]'>
-            <section className='pr-6 flex flex-col gap-2'>
-              <h4 className='font-semibold border-b-2 mb-3'>
-                Short Description
-              </h4>
+          <div
+            aria-label='dialog-body'
+            className='grid h-full grid-cols-[auto_380px] overflow-y-hidden border-t-2 p-6'
+          >
+            <section className='flex h-full flex-col gap-2 overflow-y-hidden pr-6'>
+              <div className='flex justify-between'>
+                <h4 className='mb-2 font-semibold'>Short Description</h4>
+                {hasEditAcces && (
+                  <Button
+                    size='sm'
+                    variant='link'
+                    className='w-max px-0'
+                    aria-label='edit description button'
+                    disabled={!hasEditAcces}
+                    onClick={handleEditMode('DESCRIPTION')}
+                  >
+                    Edit description
+                  </Button>
+                )}
+              </div>
               {editMode === 'DESCRIPTION' ? (
                 <EditTaskDescription
                   description={task.description}
@@ -161,8 +176,8 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                   onEditSubmit={handleTaskEdit}
                 />
               ) : (
-                <div className=' flex flex-col justify-start grow'>
-                  <div className='grow'>
+                <div className='flex h-full grow flex-col overflow-y-hidden'>
+                  <div className='mb-3 grow overflow-y-auto rounded-md border-2 p-3'>
                     {task.description ? (
                       <Markdown source={task.description} />
                     ) : (
@@ -171,29 +186,15 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                       </span>
                     )}
                   </div>
-                  <div className='flex items-center space-x-3'>
-                    {hasEditAcces && (
-                      <Button
-                        size='sm'
-                        variant='link'
-                        className='px-0 w-max'
-                        aria-label='edit description button'
-                        disabled={!hasEditAcces}
-                        onClick={handleEditMode('DESCRIPTION')}
-                      >
-                        Edit description
-                      </Button>
-                    )}
-                    <small className='text-sm text-gray-500'>
-                      updated {dayjs(task.updatedAt).fromNow()}
-                    </small>
-                  </div>
+                  <small className='text-sm text-gray-500'>
+                    updated {dayjs(task.updatedAt).fromNow()}
+                  </small>
                 </div>
               )}
             </section>
-            <section className='flex flex-col'>
+            <section className='mt-10 flex flex-col'>
               <Table>
-                <TableBody>
+                <TableBody className='rounded-md'>
                   <TableRow>
                     <TableHead className='w-[100px]'>Priority</TableHead>
                     <TableCell align='right'>
@@ -225,7 +226,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                           </SelectContent>
                         </Select>
                       ) : (
-                        <div className='border-2 rounded-md p-2'>
+                        <div className='rounded-md border-2 p-2'>
                           <PriorityOption
                             label={capitalize(task.priority)}
                             value={task.priority}
@@ -241,7 +242,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                         variant='outline'
                         className={cn(
                           `rounded-full text-sm`,
-                          columnBadgeClassNames[task.column.color]
+                          columnBadgeClassNames[task.column.color],
                         )}
                       >
                         {task.column.label}
@@ -259,7 +260,7 @@ export default function TaskDisplay({ projectId, taskId }: TaskDisplayProps) {
                           disabled={!hasEditAcces}
                         />
                       ) : (
-                        <div className='border-2 flex items-center rounded-md p-2'>
+                        <div className='flex items-center rounded-md border-2 p-2'>
                           {task.assignee?.username ? (
                             <Link
                               className='font-semibold hover:underline'

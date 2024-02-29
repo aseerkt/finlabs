@@ -13,7 +13,7 @@ type UserTabLayoutProps = PropsWithChildren<{
 
 const getCurrentSubPath = (pathname: string) => {
   const currentTabIndex = tabRoutes.findIndex((tab) =>
-    tab.pathRegex.test(pathname)
+    tab.pathRegex.test(pathname),
   );
 
   if (currentTabIndex === -1) return null;
@@ -36,7 +36,7 @@ export default function UserTabLayout({
   const currentSubPath = getCurrentSubPath(pathname);
 
   if (!currentSubPath) {
-    return <div className='w-full h-full mx-auto'>{children}</div>;
+    return <div className='mx-auto h-full w-full'>{children}</div>;
   }
 
   return (
@@ -46,7 +46,7 @@ export default function UserTabLayout({
           <Link href={`/users/${params.username}`}>{params.username}</Link>
         }
       />
-      <TabsList className='flex h-12 justify-start px-6 border-b-2'>
+      <TabsList className='flex h-12 justify-start border-b-2 px-6'>
         {tabRoutes.map((tab) => (
           <TabsTrigger key={tab.subPath} value={tab.subPath}>
             {tab.name}
@@ -54,7 +54,7 @@ export default function UserTabLayout({
         ))}
       </TabsList>
       <TabsContent value={currentSubPath}>
-        <div className='max-w-[1280px] relative w-full h-full flex px-6 mt-3 mx-auto'>
+        <div className='relative mx-auto mt-3 flex h-full w-full max-w-[1280px] px-6'>
           <div className='absolute w-[296px]'>{userSection}</div>
           <div className='ml-[320px] grow'>{children}</div>
         </div>

@@ -27,7 +27,7 @@ export default function TaskModal({ projectId }: TaskModalProps) {
 
   return (
     <Dialog open={Boolean(taskId)} onOpenChange={handleClose}>
-      <DialogContent className='p-0 max-w-[900px] flex flex-col gap-0 min-h-[550px] w-full'>
+      <DialogContent className='flex h-[650px] w-full max-w-[900px] flex-col gap-0 p-0'>
         {taskId && (
           <Suspense fallback={<TaskSkeleton />}>
             <TaskDisplay projectId={projectId} taskId={taskId} />

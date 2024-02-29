@@ -17,8 +17,13 @@ export default function EditTaskDescription({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onEditSubmit)}>
-        <MdEditorField name='description' control={form.control} autoFocus />
+      <form className='pl-1' onSubmit={form.handleSubmit(onEditSubmit)}>
+        <MdEditorField
+          name='description'
+          control={form.control}
+          autoFocus
+          height={350}
+        />
         <div className='flex justify-end gap-2'>
           <Button variant='outline' type='button' onClick={onCancelEdit}>
             Cancel
