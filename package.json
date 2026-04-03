@@ -33,7 +33,7 @@
     "cmdk": "^0.2.1",
     "dayjs": "^1.11.10",
     "holy-loader": "^2.2.9",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "lucide-react": "^0.315.0",
     "next": "^14.1.0",
     "next-auth": "^4.24.6",
